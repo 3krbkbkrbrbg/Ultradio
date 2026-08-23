@@ -19,6 +19,7 @@
 [✨ ویژگی‌ها](#-ویژگی‌های-اصلی-key-features) • [📻 ایستگاه‌ها](#-ایستگاه‌های-رادیویی-live-stations) • [🎨 تم‌های اکولایزر](#-تم‌های-گرافیکی-اکولایزر-equalizer-skins) • [📲 نصب اپلیکیشن](#-قابلیت-نصب-pwa--add-to-home-screen) • [🚀 راه‌اندازی](#-نحوه-نصب-و-اجرا-getting-started)
 
 ---
+<img width="929" height="978" alt="image" src="https://github.com/user-attachments/assets/da6ef67d-5fbb-45ec-89d8-281d34f8499c" />
 
 </div>
 
