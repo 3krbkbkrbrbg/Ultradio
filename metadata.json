@@ -1,0 +1,6 @@
+{
+  "name": "Retro 90s Online Radio",
+  "description": "A nostalgic 90s Windows-themed online radio web application featuring live genre streams, real-time song metadata, live station selection, and a fixed bottom player bar.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

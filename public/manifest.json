@@ -1,0 +1,19 @@
+{
+  "short_name": "الترادیو",
+  "name": "الترادیو - رادیو آنلاین رایگان نوستالژیک",
+  "description": "رادیو رایگان الترادیو با ۱۳ کانال استریم زنده موسیقی، نمایش آهنگ‌ها و تم‌های متنوع اکولایزر نوستالژیک",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#c0c0c0",
+  "theme_color": "#000080",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "lang": "fa"
+}
