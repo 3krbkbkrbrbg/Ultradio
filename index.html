@@ -5,12 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ultradio | استریم زنده رادیو ویندوز ۹۵</title>
     <meta name="theme-color" content="#000080">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Ultradio">
     <link rel="icon" type="image/svg+xml" href="icon.svg">
-    <link rel="apple-touch-icon" href="icon.svg">
     <link rel="manifest" href="manifest.json">
     <link href="https://cdn.jsdelivr.net/npm/vazirmatn@33.0.3/Vazirmatn-font-face.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -38,46 +33,42 @@
         html, body {
             height: 100%;
             width: 100%;
+            background-color: #008080; /* Windows 95 Teal */
             overflow: hidden;
-            background-color: #008080; /* Windows 95 Desktop Teal */
         }
 
         body {
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 6px;
+            padding: 4px;
         }
 
-        /* Container identical to Android Jetpack Compose layout */
         .app-window {
             width: 100%;
             max-width: 480px;
             height: 100%;
-            max-height: 900px;
             background-color: var(--win-bg);
-            border-radius: 8px;
+            border-radius: 6px;
             border-top: 2px solid var(--win-shadow-light);
             border-left: 2px solid var(--win-shadow-light);
             border-right: 2px solid #000;
             border-bottom: 2px solid #000;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 10px 35px rgba(0,0,0,0.6);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             overflow: hidden;
         }
 
-        /* Win95 Header */
         .win-titlebar {
             background: linear-gradient(90deg, var(--win-dark-blue), var(--win-light-blue));
             color: #FFFFFF;
-            padding: 6px 10px;
+            padding: 6px 8px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             font-size: 12px;
             font-weight: 800;
-            letter-spacing: 0.5px;
             flex-shrink: 0;
         }
 
@@ -102,10 +93,9 @@
             justify-content: center;
         }
 
-        /* Main View */
         .main-content {
             flex: 1;
-            padding: 10px;
+            padding: 8px;
             display: flex;
             flex-direction: column;
             gap: 8px;
@@ -113,7 +103,6 @@
             background-color: var(--win-bg);
         }
 
-        /* Winamp LCD Display Section */
         .winamp-lcd-box {
             background-color: var(--win-lcd-bg);
             border: 2px inset var(--win-shadow-dark);
@@ -122,7 +111,6 @@
             display: flex;
             flex-direction: column;
             gap: 4px;
-            box-shadow: inset 0 0 8px rgba(0, 255, 0, 0.15);
             flex-shrink: 0;
         }
 
@@ -142,6 +130,7 @@
         .lcd-status {
             color: #888888;
             font-size: 10.5px;
+            font-weight: bold;
         }
 
         .lcd-status.playing {
@@ -160,29 +149,26 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            text-shadow: 0 0 6px rgba(57, 255, 20, 0.5);
             padding: 2px 0;
         }
 
-        /* 16-Band Retro Spectrum Visualizer */
         .spectrum-container {
             display: flex;
             align-items: flex-end;
             justify-content: space-between;
-            height: 34px;
+            height: 32px;
             gap: 2px;
-            padding-top: 4px;
+            padding-top: 2px;
         }
 
         .spectrum-bar {
             flex: 1;
             background: linear-gradient(to top, var(--win-lcd-green) 50%, #FFFF00 80%, #FF0000 100%);
             border-radius: 1px 1px 0 0;
-            height: 12%;
+            height: 15%;
             transition: height 0.12s ease;
         }
 
-        /* Winamp Playback Controls */
         .winamp-controls-row {
             background-color: var(--win-card-bg);
             border-top: 1px solid var(--win-shadow-light);
@@ -215,7 +201,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 2px;
         }
 
         .retro-action-btn:active {
@@ -223,7 +208,6 @@
             border-left: 2px solid var(--win-shadow-dark);
             border-right: 2px solid #FFF;
             border-bottom: 2px solid #FFF;
-            background: #B4B0A8;
         }
 
         .volume-tag {
@@ -241,7 +225,7 @@
             flex-shrink: 0;
         }
 
-        /* Radio Stations 2-Column Grid exactly matching Android Jetpack Compose */
+        /* 2-Column Grid exactly mirroring Android Jetpack Compose */
         .stations-grid-scroll {
             flex: 1;
             overflow-y: auto;
@@ -263,9 +247,8 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            gap: 4px;
+            gap: 3px;
             border-radius: 2px;
-            transition: all 0.1s ease;
         }
 
         .station-grid-card.active {
@@ -315,7 +298,6 @@
             color: #000000;
         }
 
-        /* Windows 95 Bottom Taskbar */
         .win-bottom-taskbar {
             background-color: var(--win-bg);
             border-top: 1px solid var(--win-shadow-light);
@@ -369,9 +351,9 @@
             </div>
         </div>
 
-        <!-- Main Content Body -->
+        <!-- Main Content -->
         <div class="main-content">
-            <!-- Winamp LCD Digital Screen -->
+            <!-- Winamp LCD Screen -->
             <div class="winamp-lcd-box">
                 <div class="lcd-top-row">
                     <span class="lcd-bitrate" id="lcd-bitrate">320 KBPS • STEREO</span>
@@ -380,13 +362,11 @@
                 <div class="lcd-track-title" id="lcd-title">
                     ♫ رادیو پاپ خارجی (Pop Hits)
                 </div>
-                <!-- 16-Band Animated Spectrum Visualizer -->
-                <div class="spectrum-container" id="spectrum-bars">
-                    <!-- Javascript generated 16 bars -->
-                </div>
+                <!-- 16-Band Animated Spectrum -->
+                <div class="spectrum-container" id="spectrum-bars"></div>
             </div>
 
-            <!-- Winamp Style Playback Controls -->
+            <!-- Controls Panel -->
             <div class="winamp-controls-row">
                 <div class="control-buttons">
                     <button class="retro-action-btn" onclick="prevRadioStation()"><i class="fa-solid fa-backward-step"></i></button>
@@ -404,12 +384,10 @@
             </div>
 
             <!-- Complete List of All Iranian, Rap, Lofi and Global Stations (2 Columns) -->
-            <div class="stations-grid-scroll" id="stations-grid-container">
-                <!-- Injected via JS -->
-            </div>
+            <div class="stations-grid-scroll" id="stations-grid-container"></div>
         </div>
 
-        <!-- Windows 95 Bottom Taskbar -->
+        <!-- Windows 95 Taskbar -->
         <div class="win-bottom-taskbar">
             <div class="start-button-win" onclick="togglePlayState()">
                 <i class="fa-brands fa-windows" style="color: var(--win-dark-blue);"></i>
@@ -422,20 +400,19 @@
     </div>
 
     <script>
-        // Complete 12 Official Streams matching Android & iOS native versions
         const STATIONS = [
-            { id: "pop", nameFa: "پاپ خارجی", nameEn: "Pop Hits", url: "https://radio.9craft.ir:7443/pop", bitrate: "320 kbps", desc: "بهترین آهنگ‌های پاپ بین‌المللی" },
-            { id: "pop2", nameFa: "پاپ کلاب و دنس", nameEn: "Pop Club & Dance", url: "https://radio.9craft.ir:7443/pop2", bitrate: "320 kbps", desc: "میکس‌های پرانرژی و دنس روز" },
-            { id: "lofi", nameFa: "لوفای (Lo-Fi)", nameEn: "Lo-Fi Beats", url: "https://radio.9craft.ir:7443/lofi", bitrate: "192 kbps", desc: "بیت‌های آرامش‌بخش برای مطالعه و تمرکز" },
-            { id: "persian", nameFa: "فارسی قدیمی", nameEn: "Classic Persian", url: "https://radio.9craft.ir:7443/persian", bitrate: "256 kbps", desc: "نوستالژی طلایی و ترانه‌های ماندگار ایرانی" },
-            { id: "prap", nameFa: "رپ فارسی", nameEn: "Persian Rap", url: "https://radio.9craft.ir:7443/prap", bitrate: "320 kbps", desc: "برترین آثار هیپ‌هاپ و رپ زیرزمینی" },
-            { id: "hiphop", nameFa: "هیپ هاپ جهانی", nameEn: "Global Hip-Hop", url: "https://radio.9craft.ir:7443/hiphop", bitrate: "320 kbps", desc: "ترک‌های بیس‌دار هیپ‌هاپ اولداسکول تا ترپ" },
-            { id: "phonk", nameFa: "دریفت فانک", nameEn: "Drift Phonk", url: "https://radio.9craft.ir:7443/phonk", bitrate: "320 kbps", desc: "بیت‌های پرشتاب دریفت و بیس‌دار" },
-            { id: "phonk2", nameFa: "فانک هایپر", nameEn: "Phonk Hyper", url: "https://radio.9craft.ir:7443/phonk2", bitrate: "320 kbps", desc: "فانک متال، ممفیس و موج تاریک" },
-            { id: "rock", nameFa: "راک و متال", nameEn: "Classic & Hard Rock", url: "https://radio.9craft.ir:7443/rock", bitrate: "320 kbps", desc: "سولوهای افسانه‌ای گیتار و هارد راک" },
-            { id: "relax", nameFa: "آرامش بخش", nameEn: "Relax & Ambient", url: "https://radio.9craft.ir:7443/relax", bitrate: "256 kbps", desc: "موسیقی امبینت و مدیتیشن" },
-            { id: "soul", nameFa: "سول و بلوز", nameEn: "Soul & Neo-Soul", url: "https://radio.9craft.ir:7443/soul", bitrate: "256 kbps", desc: "نوای احساسی سول و آر اند بی" },
-            { id: "ost", nameFa: "موسیقی متن (OST)", nameEn: "Soundtracks & OST", url: "https://radio.9craft.ir:7443/ost", bitrate: "320 kbps", desc: "ماندگارترین موسیقی متن فیلم و انیمه" }
+            { id: "pop", nameFa: "پاپ خارجی", nameEn: "Pop Hits", url: "https://radio.9craft.ir:7443/pop", bitrate: "320 kbps" },
+            { id: "pop2", nameFa: "پاپ کلاب و دنس", nameEn: "Pop Club & Dance", url: "https://radio.9craft.ir:7443/pop2", bitrate: "320 kbps" },
+            { id: "lofi", nameFa: "لوفای (Lo-Fi)", nameEn: "Lo-Fi Beats", url: "https://radio.9craft.ir:7443/lofi", bitrate: "192 kbps" },
+            { id: "persian", nameFa: "فارسی قدیمی", nameEn: "Classic Persian", url: "https://radio.9craft.ir:7443/persian", bitrate: "256 kbps" },
+            { id: "prap", nameFa: "رپ فارسی", nameEn: "Persian Rap", url: "https://radio.9craft.ir:7443/prap", bitrate: "320 kbps" },
+            { id: "hiphop", nameFa: "هیپ هاپ جهانی", nameEn: "Global Hip-Hop", url: "https://radio.9craft.ir:7443/hiphop", bitrate: "320 kbps" },
+            { id: "phonk", nameFa: "دریفت فانک", nameEn: "Drift Phonk", url: "https://radio.9craft.ir:7443/phonk", bitrate: "320 kbps" },
+            { id: "phonk2", nameFa: "فانک هایپر", nameEn: "Phonk Hyper", url: "https://radio.9craft.ir:7443/phonk2", bitrate: "320 kbps" },
+            { id: "rock", nameFa: "راک و متال", nameEn: "Classic & Hard Rock", url: "https://radio.9craft.ir:7443/rock", bitrate: "320 kbps" },
+            { id: "relax", nameFa: "آرامش بخش", nameEn: "Relax & Ambient", url: "https://radio.9craft.ir:7443/relax", bitrate: "256 kbps" },
+            { id: "soul", nameFa: "سول و بلوز", nameEn: "Soul & Neo-Soul", url: "https://radio.9craft.ir:7443/soul", bitrate: "256 kbps" },
+            { id: "ost", nameFa: "موسیقی متن (OST)", nameEn: "Soundtracks & OST", url: "https://radio.9craft.ir:7443/ost", bitrate: "320 kbps" }
         ];
 
         let currentIndex = 0;
@@ -451,7 +428,7 @@
             spectrumContainer.appendChild(bar);
         }
 
-        // Render 2-column station list
+        // Render 2-column station list identical to Android Jetpack Compose
         const gridContainer = document.getElementById('stations-grid-container');
         STATIONS.forEach((station, index) => {
             const card = document.createElement('div');
@@ -472,7 +449,7 @@
                 if (isPlaying) {
                     bar.style.height = (Math.floor(Math.random() * 85) + 15) + '%';
                 } else {
-                    bar.style.height = '12%';
+                    bar.style.height = '15%';
                 }
             });
         }
@@ -510,13 +487,11 @@
                     spectrumAnimInterval = setInterval(animateSpectrum, 100);
                 }
 
-                // MediaSession Lockscreen support for Android & iOS
                 if ('mediaSession' in navigator) {
                     navigator.mediaSession.metadata = new MediaMetadata({
                         title: station.nameFa,
                         artist: `الترادیو — ${station.nameEn}`,
-                        album: "Ultradio Windows 95 Live",
-                        artwork: [{ src: "icon.svg", sizes: "512x512", type: "image/svg+xml" }]
+                        album: "Ultradio Windows 95 Live"
                     });
 
                     navigator.mediaSession.setActionHandler('play', startPlayback);
