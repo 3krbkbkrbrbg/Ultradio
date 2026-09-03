@@ -19,10 +19,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Deploy static root to GitHub Pages Branch (gh-pages)
+      - name: Deploy to GitHub Pages Branch (gh-pages)
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: .
           branch: gh-pages
+
 
 

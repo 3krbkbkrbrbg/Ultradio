@@ -3,390 +3,569 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>الترادیو | رادیو آنلاین رایگان نوستالژیک</title>
+    <title>Ultradio | استریم زنده رادیو ویندوز ۹۵</title>
     <meta name="theme-color" content="#000080">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ultradio">
     <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
     <link rel="manifest" href="manifest.json">
     <link href="https://cdn.jsdelivr.net/npm/vazirmatn@33.0.3/Vazirmatn-font-face.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --win-bg: #C0C0C0;
-            --win-dark: #000080;
-            --win-light: #1084D0;
-            --win-shadow-light: #FFFFFF;
+            --win-dark-blue: #000080;
+            --win-light-blue: #1084D0;
+            --win-lcd-bg: #0A120A;
+            --win-lcd-green: #39FF14;
             --win-shadow-dark: #404040;
-            --lcd-bg: #0A120A;
-            --lcd-green: #39FF14;
+            --win-shadow-light: #FFFFFF;
+            --win-card-bg: #D4D0C8;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Vazirmatn', sans-serif;
+            font-family: 'Vazirmatn', Tahoma, sans-serif;
             -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background-color: #008080; /* Windows 95 Desktop Teal */
         }
 
         body {
-            background-color: #008080;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            padding: 10px;
+            padding: 6px;
         }
 
-        .win-frame {
+        /* Container identical to Android Jetpack Compose layout */
+        .app-window {
             width: 100%;
-            max-width: 440px;
-            background: var(--win-bg);
-            border-top: 3px solid #FFF;
-            border-left: 3px solid #FFF;
-            border-right: 3px solid #000;
-            border-bottom: 3px solid #000;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            max-width: 480px;
+            height: 100%;
+            max-height: 900px;
+            background-color: var(--win-bg);
+            border-radius: 8px;
+            border-top: 2px solid var(--win-shadow-light);
+            border-left: 2px solid var(--win-shadow-light);
+            border-right: 2px solid #000;
+            border-bottom: 2px solid #000;
             display: flex;
             flex-direction: column;
-            border-radius: 4px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.6);
             overflow: hidden;
         }
 
+        /* Win95 Header */
         .win-titlebar {
-            background: linear-gradient(90deg, #000080, #1084D0);
-            color: #fff;
+            background: linear-gradient(90deg, var(--win-dark-blue), var(--win-light-blue));
+            color: #FFFFFF;
             padding: 6px 10px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-size: 13px;
-            font-weight: bold;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
         }
 
-        .main-content {
-            padding: 12px;
+        .win-btn-group {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
+            gap: 3px;
         }
 
-        .winamp-lcd {
-            background: var(--lcd-bg);
-            border: 2px inset #808080;
+        .win-btn-small {
+            width: 16px;
+            height: 14px;
+            background: var(--win-bg);
+            border-top: 1px solid #FFF;
+            border-left: 1px solid #FFF;
+            border-right: 1px solid #000;
+            border-bottom: 1px solid #000;
+            color: #000;
+            font-size: 9px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Main View */
+        .main-content {
+            flex: 1;
             padding: 10px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
+            overflow: hidden;
+            background-color: var(--win-bg);
         }
 
-        .lcd-status {
+        /* Winamp LCD Display Section */
+        .winamp-lcd-box {
+            background-color: var(--win-lcd-bg);
+            border: 2px inset var(--win-shadow-dark);
+            border-radius: 4px;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            box-shadow: inset 0 0 8px rgba(0, 255, 0, 0.15);
+            flex-shrink: 0;
+        }
+
+        .lcd-top-row {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             font-family: monospace;
             font-size: 11px;
             font-weight: bold;
         }
 
-        .lcd-song {
-            color: var(--lcd-green);
+        .lcd-bitrate {
+            color: var(--win-lcd-green);
+        }
+
+        .lcd-status {
+            color: #888888;
+            font-size: 10.5px;
+        }
+
+        .lcd-status.playing {
+            color: #FF3333;
+        }
+
+        .lcd-status.buffering {
+            color: #FFCC00;
+        }
+
+        .lcd-track-title {
+            color: var(--win-lcd-green);
             font-family: monospace;
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: bold;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            text-shadow: 0 0 6px rgba(57, 255, 20, 0.6);
+            text-shadow: 0 0 6px rgba(57, 255, 20, 0.5);
+            padding: 2px 0;
         }
 
+        /* 16-Band Retro Spectrum Visualizer */
         .spectrum-container {
             display: flex;
             align-items: flex-end;
-            height: 36px;
+            justify-content: space-between;
+            height: 34px;
             gap: 2px;
             padding-top: 4px;
         }
 
         .spectrum-bar {
             flex: 1;
-            background: linear-gradient(to top, #39FF14 60%, #FFFF00 85%, #FF0000 100%);
-            height: 15%;
-            transition: height 0.15s ease;
+            background: linear-gradient(to top, var(--win-lcd-green) 50%, #FFFF00 80%, #FF0000 100%);
+            border-radius: 1px 1px 0 0;
+            height: 12%;
+            transition: height 0.12s ease;
         }
 
-        .winamp-panel {
-            background: #D4D0C8;
-            border: 1px solid #404040;
-            padding: 8px;
+        /* Winamp Playback Controls */
+        .winamp-controls-row {
+            background-color: var(--win-card-bg);
+            border-top: 1px solid var(--win-shadow-light);
+            border-left: 1px solid var(--win-shadow-light);
+            border-right: 1px solid var(--win-shadow-dark);
+            border-bottom: 1px solid var(--win-shadow-dark);
+            padding: 6px 8px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-shrink: 0;
         }
 
-        .retro-btn {
-            background: #C0C0C0;
+        .control-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .retro-action-btn {
+            background: var(--win-bg);
             border-top: 2px solid #FFF;
             border-left: 2px solid #FFF;
-            border-right: 2px solid #404040;
-            border-bottom: 2px solid #404040;
-            padding: 6px 14px;
-            font-size: 14px;
-            font-weight: bold;
+            border-right: 2px solid var(--win-shadow-dark);
+            border-bottom: 2px solid var(--win-shadow-dark);
+            padding: 5px 12px;
+            font-size: 13px;
             cursor: pointer;
             color: #000;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 2px;
         }
 
-        .retro-btn:active {
-            border-top: 2px solid #404040;
-            border-left: 2px solid #404040;
+        .retro-action-btn:active {
+            border-top: 2px solid var(--win-shadow-dark);
+            border-left: 2px solid var(--win-shadow-dark);
             border-right: 2px solid #FFF;
             border-bottom: 2px solid #FFF;
+            background: #B4B0A8;
         }
 
-        .station-grid {
+        .volume-tag {
+            font-size: 11px;
+            font-weight: bold;
+            color: #000;
+            font-family: monospace;
+        }
+
+        .section-header-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: #000;
+            padding-top: 2px;
+            flex-shrink: 0;
+        }
+
+        /* Radio Stations 2-Column Grid exactly matching Android Jetpack Compose */
+        .stations-grid-scroll {
+            flex: 1;
+            overflow-y: auto;
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 6px;
-            max-height: 380px;
-            overflow-y: auto;
+            padding: 2px;
+            -webkit-overflow-scrolling: touch;
         }
 
-        .station-card {
-            background: #D4D0C8;
-            border-top: 2px solid #FFF;
-            border-left: 2px solid #FFF;
-            border-right: 2px solid #404040;
-            border-bottom: 2px solid #404040;
+        .station-grid-card {
+            background-color: var(--win-card-bg);
+            border-top: 1px solid var(--win-shadow-light);
+            border-left: 1px solid var(--win-shadow-light);
+            border-right: 1px solid var(--win-shadow-dark);
+            border-bottom: 1px solid var(--win-shadow-dark);
             padding: 8px;
             cursor: pointer;
             display: flex;
             flex-direction: column;
-            gap: 3px;
+            justify-content: space-between;
+            gap: 4px;
+            border-radius: 2px;
+            transition: all 0.1s ease;
         }
 
-        .station-card.active {
-            background: #000080;
-            color: #FFF;
-            border-top: 2px solid #000;
-            border-left: 2px solid #000;
-            border-right: 2px solid #FFF;
-            border-bottom: 2px solid #FFF;
+        .station-grid-card.active {
+            background-color: var(--win-dark-blue) !important;
+            color: #FFFFFF !important;
+            border-top: 1px solid #000 !important;
+            border-left: 1px solid #000 !important;
+            border-right: 1px solid #FFF !important;
+            border-bottom: 1px solid #FFF !important;
         }
 
-        .st-title {
+        .st-name-fa {
             font-size: 12px;
-            font-weight: bold;
+            font-weight: 800;
+            color: #000000;
         }
 
-        .st-desc {
+        .station-grid-card.active .st-name-fa {
+            color: #FFFFFF;
+        }
+
+        .st-name-en {
             font-size: 10px;
-            opacity: 0.8;
-            line-height: 1.3;
+            color: #555555;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .st-badge {
+        .station-grid-card.active .st-name-en {
+            color: #D4D0C8;
+        }
+
+        .st-bitrate-chip {
             align-self: flex-start;
             font-size: 9px;
-            font-weight: bold;
+            font-weight: 800;
             padding: 1px 5px;
-            background: #333;
-            color: #FFF;
+            background-color: var(--win-shadow-dark);
+            color: #FFFFFF;
             border-radius: 2px;
+            margin-top: 2px;
         }
 
-        .station-card.active .st-badge {
-            background: #FF0;
-            color: #000;
+        .station-grid-card.active .st-bitrate-chip {
+            background-color: #FFFF00;
+            color: #000000;
         }
 
-        .win-taskbar {
-            background: #C0C0C0;
-            border-top: 2px solid #FFF;
+        /* Windows 95 Bottom Taskbar */
+        .win-bottom-taskbar {
+            background-color: var(--win-bg);
+            border-top: 1px solid var(--win-shadow-light);
             padding: 4px 8px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .start-button-win {
+            background: var(--win-bg);
+            border-top: 2px solid #FFF;
+            border-left: 2px solid #FFF;
+            border-right: 2px solid var(--win-shadow-dark);
+            border-bottom: 2px solid var(--win-shadow-dark);
+            padding: 2px 8px;
             font-size: 11px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #000;
+            cursor: pointer;
+        }
+
+        .signature-tray {
+            border: 1px inset var(--win-shadow-dark);
+            padding: 2px 8px;
+            font-family: monospace;
+            font-size: 10.5px;
             font-weight: bold;
+            color: #000;
+            background-color: var(--win-bg);
         }
     </style>
 </head>
 <body>
 
-    <div class="win-frame">
-        <!-- Titlebar -->
+    <div class="app-window">
+        <!-- Win95 Top Header -->
         <div class="win-titlebar">
             <div style="display: flex; align-items: center; gap: 6px;">
                 <i class="fa-solid fa-radio"></i>
-                <span>الترادیو — استریم زنده ویندوز ۹۵</span>
+                <span>Ultradio — Windows 95 Radio Player</span>
             </div>
-            <span style="font-family: monospace;">_ □ ✕</span>
+            <div class="win-btn-group">
+                <div class="win-btn-small">_</div>
+                <div class="win-btn-small">□</div>
+                <div class="win-btn-small">✕</div>
+            </div>
         </div>
 
+        <!-- Main Content Body -->
         <div class="main-content">
-            <!-- Winamp LCD -->
-            <div class="winamp-lcd">
-                <div class="lcd-status">
-                    <span id="bitrate-tag" style="color: var(--lcd-green);">320 KBPS • STEREO</span>
-                    <span id="play-status" style="color: #FF3333;">■ STOPPED</span>
+            <!-- Winamp LCD Digital Screen -->
+            <div class="winamp-lcd-box">
+                <div class="lcd-top-row">
+                    <span class="lcd-bitrate" id="lcd-bitrate">320 KBPS • STEREO</span>
+                    <span class="lcd-status" id="lcd-status">■ STOPPED</span>
                 </div>
-                <div class="lcd-song" id="station-title">
+                <div class="lcd-track-title" id="lcd-title">
                     ♫ رادیو پاپ خارجی (Pop Hits)
                 </div>
-                <div class="spectrum-container" id="spectrum">
-                    <!-- 16 Bars -->
+                <!-- 16-Band Animated Spectrum Visualizer -->
+                <div class="spectrum-container" id="spectrum-bars">
+                    <!-- Javascript generated 16 bars -->
                 </div>
             </div>
 
-            <!-- Controls -->
-            <div class="winamp-panel">
-                <div style="display: flex; gap: 6px;">
-                    <button class="retro-btn" onclick="prevStation()"><i class="fa-solid fa-backward-step"></i></button>
-                    <button class="retro-btn" id="play-btn" onclick="togglePlay()" style="color: #008000;"><i class="fa-solid fa-play"></i></button>
-                    <button class="retro-btn" onclick="stopRadio()"><i class="fa-solid fa-stop"></i></button>
-                    <button class="retro-btn" onclick="nextStation()"><i class="fa-solid fa-forward-step"></i></button>
+            <!-- Winamp Style Playback Controls -->
+            <div class="winamp-controls-row">
+                <div class="control-buttons">
+                    <button class="retro-action-btn" onclick="prevRadioStation()"><i class="fa-solid fa-backward-step"></i></button>
+                    <button class="retro-action-btn" id="play-pause-btn" onclick="togglePlayState()" style="color: #008000;"><i class="fa-solid fa-play"></i></button>
+                    <button class="retro-action-btn" onclick="stopRadioPlayback()"><i class="fa-solid fa-stop"></i></button>
+                    <button class="retro-action-btn" onclick="nextRadioStation()"><i class="fa-solid fa-forward-step"></i></button>
                 </div>
-                <div style="font-size: 11px; font-weight: bold; color: #000; font-family: monospace;">
+                <div class="volume-tag">
                     VOL: 100%
                 </div>
             </div>
 
-            <div style="font-size: 12px; font-weight: bold; color: #000;">
-                ایستگاه‌های رادیویی:
+            <div class="section-header-title">
+                ایستگاه‌های رادیویی آنلاین:
             </div>
 
-            <!-- Stations List -->
-            <div class="station-grid" id="station-list">
-                <!-- Dynamically populated -->
+            <!-- Complete List of All Iranian, Rap, Lofi and Global Stations (2 Columns) -->
+            <div class="stations-grid-scroll" id="stations-grid-container">
+                <!-- Injected via JS -->
             </div>
         </div>
 
-        <div class="win-taskbar">
-            <div style="background: #C0C0C0; border-top: 1px solid #FFF; border-left: 1px solid #FFF; border-right: 1px solid #404040; border-bottom: 1px solid #404040; padding: 2px 6px;">
-                Start
+        <!-- Windows 95 Bottom Taskbar -->
+        <div class="win-bottom-taskbar">
+            <div class="start-button-win" onclick="togglePlayState()">
+                <i class="fa-brands fa-windows" style="color: var(--win-dark-blue);"></i>
+                <span>Start</span>
             </div>
-            <div style="font-family: monospace;">Crafted by Hellboy Coder ⚡</div>
+            <div class="signature-tray">
+                Crafted by Hellboy Coder ⚡
+            </div>
         </div>
     </div>
 
     <script>
+        // Complete 12 Official Streams matching Android & iOS native versions
         const STATIONS = [
             { id: "pop", nameFa: "پاپ خارجی", nameEn: "Pop Hits", url: "https://radio.9craft.ir:7443/pop", bitrate: "320 kbps", desc: "بهترین آهنگ‌های پاپ بین‌المللی" },
             { id: "pop2", nameFa: "پاپ کلاب و دنس", nameEn: "Pop Club & Dance", url: "https://radio.9craft.ir:7443/pop2", bitrate: "320 kbps", desc: "میکس‌های پرانرژی و دنس روز" },
-            { id: "lofi", nameFa: "لوفای (Lo-Fi)", nameEn: "Lo-Fi Beats", url: "https://radio.9craft.ir:7443/lofi", bitrate: "192 kbps", desc: "بیت‌های آرامش‌بخش مطالعه و تمرکز" },
-            { id: "persian", nameFa: "فارسی قدیمی", nameEn: "Classic Persian", url: "https://radio.9craft.ir:7443/persian", bitrate: "256 kbps", desc: "ترانه‌های ماندگار و اصیل ایرانی" },
+            { id: "lofi", nameFa: "لوفای (Lo-Fi)", nameEn: "Lo-Fi Beats", url: "https://radio.9craft.ir:7443/lofi", bitrate: "192 kbps", desc: "بیت‌های آرامش‌بخش برای مطالعه و تمرکز" },
+            { id: "persian", nameFa: "فارسی قدیمی", nameEn: "Classic Persian", url: "https://radio.9craft.ir:7443/persian", bitrate: "256 kbps", desc: "نوستالژی طلایی و ترانه‌های ماندگار ایرانی" },
             { id: "prap", nameFa: "رپ فارسی", nameEn: "Persian Rap", url: "https://radio.9craft.ir:7443/prap", bitrate: "320 kbps", desc: "برترین آثار هیپ‌هاپ و رپ زیرزمینی" },
-            { id: "hiphop", nameFa: "هیپ هاپ جهانی", nameEn: "Global Hip-Hop", url: "https://radio.9craft.ir:7443/hiphop", bitrate: "320 kbps", desc: "ترک‌های بیس‌دار هیپ‌هاپ اولداسکول" },
-            { id: "phonk", nameFa: "دریفت فانک", nameEn: "Drift Phonk", url: "https://radio.9craft.ir:7443/phonk", bitrate: "320 kbps", desc: "بیت‌های پرشتاب دریفت و هایپرفانک" },
-            { id: "phonk2", nameFa: "فانک هایپر", nameEn: "Phonk Hyper", url: "https://radio.9craft.ir:7443/phonk2", bitrate: "320 kbps", desc: "فانک متال و موج تاریک" },
-            { id: "rock", nameFa: "راک و متال", nameEn: "Hard Rock", url: "https://radio.9craft.ir:7443/rock", bitrate: "320 kbps", desc: "سولوهای افسانه‌ای گیتار و هارد راک" },
+            { id: "hiphop", nameFa: "هیپ هاپ جهانی", nameEn: "Global Hip-Hop", url: "https://radio.9craft.ir:7443/hiphop", bitrate: "320 kbps", desc: "ترک‌های بیس‌دار هیپ‌هاپ اولداسکول تا ترپ" },
+            { id: "phonk", nameFa: "دریفت فانک", nameEn: "Drift Phonk", url: "https://radio.9craft.ir:7443/phonk", bitrate: "320 kbps", desc: "بیت‌های پرشتاب دریفت و بیس‌دار" },
+            { id: "phonk2", nameFa: "فانک هایپر", nameEn: "Phonk Hyper", url: "https://radio.9craft.ir:7443/phonk2", bitrate: "320 kbps", desc: "فانک متال، ممفیس و موج تاریک" },
+            { id: "rock", nameFa: "راک و متال", nameEn: "Classic & Hard Rock", url: "https://radio.9craft.ir:7443/rock", bitrate: "320 kbps", desc: "سولوهای افسانه‌ای گیتار و هارد راک" },
             { id: "relax", nameFa: "آرامش بخش", nameEn: "Relax & Ambient", url: "https://radio.9craft.ir:7443/relax", bitrate: "256 kbps", desc: "موسیقی امبینت و مدیتیشن" },
             { id: "soul", nameFa: "سول و بلوز", nameEn: "Soul & Neo-Soul", url: "https://radio.9craft.ir:7443/soul", bitrate: "256 kbps", desc: "نوای احساسی سول و آر اند بی" },
-            { id: "ost", nameFa: "موسیقی متن (OST)", nameEn: "Soundtracks", url: "https://radio.9craft.ir:7443/ost", bitrate: "320 kbps", desc: "ماندگارترین موسیقی متن فیلم و انیمه" }
+            { id: "ost", nameFa: "موسیقی متن (OST)", nameEn: "Soundtracks & OST", url: "https://radio.9craft.ir:7443/ost", bitrate: "320 kbps", desc: "ماندگارترین موسیقی متن فیلم و انیمه" }
         ];
 
         let currentIndex = 0;
         let isPlaying = false;
-        let audio = new Audio();
-        let spectrumInterval = null;
+        let audioPlayer = new Audio();
+        let spectrumAnimInterval = null;
 
-        // Render spectrum bars
-        const spectrum = document.getElementById('spectrum');
-        for(let i=0; i<16; i++) {
+        // Render 16 spectrum bars
+        const spectrumContainer = document.getElementById('spectrum-bars');
+        for (let i = 0; i < 16; i++) {
             const bar = document.createElement('div');
             bar.className = 'spectrum-bar';
-            spectrum.appendChild(bar);
+            spectrumContainer.appendChild(bar);
         }
 
-        // Render station cards
-        const list = document.getElementById('station-list');
-        STATIONS.forEach((st, idx) => {
+        // Render 2-column station list
+        const gridContainer = document.getElementById('stations-grid-container');
+        STATIONS.forEach((station, index) => {
             const card = document.createElement('div');
-            card.className = `station-card ${idx === 0 ? 'active' : ''}`;
-            card.id = `station-${idx}`;
-            card.onclick = () => selectStation(idx);
+            card.className = `station-grid-card ${index === 0 ? 'active' : ''}`;
+            card.id = `st-card-${index}`;
+            card.onclick = () => selectAndPlayStation(index);
             card.innerHTML = `
-                <div class="st-title">${st.nameFa}</div>
-                <div class="st-desc">${st.desc}</div>
-                <span class="st-badge">${st.bitrate}</span>
+                <div class="st-name-fa">${station.nameFa}</div>
+                <div class="st-name-en">${station.nameEn}</div>
+                <span class="st-bitrate-chip">${station.bitrate}</span>
             `;
-            list.appendChild(card);
+            gridContainer.appendChild(card);
         });
 
-        function updateSpectrum() {
+        function animateSpectrum() {
             const bars = document.querySelectorAll('.spectrum-bar');
-            bars.forEach(b => {
-                b.style.height = isPlaying ? (Math.random() * 80 + 15) + '%' : '15%';
+            bars.forEach(bar => {
+                if (isPlaying) {
+                    bar.style.height = (Math.floor(Math.random() * 85) + 15) + '%';
+                } else {
+                    bar.style.height = '12%';
+                }
             });
         }
 
-        function selectStation(idx) {
-            document.querySelectorAll('.station-card').forEach(c => c.classList.remove('active'));
-            document.getElementById(`station-${idx}`).classList.add('active');
-            currentIndex = idx;
-            const st = STATIONS[idx];
-            document.getElementById('station-title').textContent = `♫ ${st.nameFa} (${st.nameEn})`;
-            document.getElementById('bitrate-tag').textContent = `${st.bitrate} • STEREO`;
-            playRadio();
+        function selectAndPlayStation(index) {
+            document.querySelectorAll('.station-grid-card').forEach(c => c.classList.remove('active'));
+            const activeCard = document.getElementById(`st-card-${index}`);
+            if (activeCard) {
+                activeCard.classList.add('active');
+                activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            currentIndex = index;
+            const station = STATIONS[index];
+            document.getElementById('lcd-title').textContent = `♫ ${station.nameFa} (${station.nameEn})`;
+            document.getElementById('lcd-bitrate').textContent = `${station.bitrate} • STEREO`;
+            startPlayback();
         }
 
-        function playRadio() {
-            const st = STATIONS[currentIndex];
-            audio.src = st.url;
-            document.getElementById('play-status').textContent = '● BUFFERING...';
-            document.getElementById('play-status').style.color = '#FFA500';
+        function startPlayback() {
+            const station = STATIONS[currentIndex];
+            audioPlayer.src = station.url;
+            
+            const statusLabel = document.getElementById('lcd-status');
+            statusLabel.textContent = '● BUFFERING...';
+            statusLabel.className = 'lcd-status buffering';
 
-            audio.play().then(() => {
+            audioPlayer.play().then(() => {
                 isPlaying = true;
-                document.getElementById('play-status').textContent = '● LIVE ON AIR';
-                document.getElementById('play-status').style.color = '#FF3333';
-                document.getElementById('play-btn').innerHTML = '<i class="fa-solid fa-pause"></i>';
-                if (!spectrumInterval) spectrumInterval = setInterval(updateSpectrum, 120);
+                statusLabel.textContent = '● LIVE ON AIR';
+                statusLabel.className = 'lcd-status playing';
+                document.getElementById('play-pause-btn').innerHTML = '<i class="fa-solid fa-pause"></i>';
+                
+                if (!spectrumAnimInterval) {
+                    spectrumAnimInterval = setInterval(animateSpectrum, 100);
+                }
 
+                // MediaSession Lockscreen support for Android & iOS
                 if ('mediaSession' in navigator) {
                     navigator.mediaSession.metadata = new MediaMetadata({
-                        title: st.nameFa,
-                        artist: `الترادیو — ${st.nameEn}`,
-                        album: "Ultradio Windows 95 Live"
+                        title: station.nameFa,
+                        artist: `الترادیو — ${station.nameEn}`,
+                        album: "Ultradio Windows 95 Live",
+                        artwork: [{ src: "icon.svg", sizes: "512x512", type: "image/svg+xml" }]
                     });
+
+                    navigator.mediaSession.setActionHandler('play', startPlayback);
+                    navigator.mediaSession.setActionHandler('pause', togglePlayState);
+                    navigator.mediaSession.setActionHandler('previoustrack', prevRadioStation);
+                    navigator.mediaSession.setActionHandler('nexttrack', nextRadioStation);
                 }
-            }).catch(e => {
-                console.warn(e);
-                document.getElementById('play-status').textContent = '✕ ERROR';
+            }).catch(err => {
+                console.warn('Playback error:', err);
+                statusLabel.textContent = '✕ RECONNECTING...';
+                statusLabel.className = 'lcd-status buffering';
             });
         }
 
-        function togglePlay() {
+        function togglePlayState() {
+            const statusLabel = document.getElementById('lcd-status');
             if (isPlaying) {
-                audio.pause();
+                audioPlayer.pause();
                 isPlaying = false;
-                document.getElementById('play-status').textContent = '■ PAUSED';
-                document.getElementById('play-btn').innerHTML = '<i class="fa-solid fa-play"></i>';
-                clearInterval(spectrumInterval);
-                spectrumInterval = null;
-                updateSpectrum();
+                statusLabel.textContent = '■ PAUSED';
+                statusLabel.className = 'lcd-status';
+                document.getElementById('play-pause-btn').innerHTML = '<i class="fa-solid fa-play"></i>';
+                clearInterval(spectrumAnimInterval);
+                spectrumAnimInterval = null;
+                animateSpectrum();
             } else {
-                playRadio();
+                startPlayback();
             }
         }
 
-        function stopRadio() {
-            audio.pause();
-            audio.src = '';
+        function stopRadioPlayback() {
+            audioPlayer.pause();
+            audioPlayer.src = '';
             isPlaying = false;
-            document.getElementById('play-status').textContent = '■ STOPPED';
-            document.getElementById('play-status').style.color = '#888';
-            document.getElementById('play-btn').innerHTML = '<i class="fa-solid fa-play"></i>';
-            clearInterval(spectrumInterval);
-            spectrumInterval = null;
-            updateSpectrum();
+            const statusLabel = document.getElementById('lcd-status');
+            statusLabel.textContent = '■ STOPPED';
+            statusLabel.className = 'lcd-status';
+            document.getElementById('play-pause-btn').innerHTML = '<i class="fa-solid fa-play"></i>';
+            clearInterval(spectrumAnimInterval);
+            spectrumAnimInterval = null;
+            animateSpectrum();
         }
 
-        function nextStation() {
-            selectStation((currentIndex + 1) % STATIONS.length);
+        function nextRadioStation() {
+            selectAndPlayStation((currentIndex + 1) % STATIONS.length);
         }
 
-        function prevStation() {
-            selectStation((currentIndex - 1 + STATIONS.length) % STATIONS.length);
+        function prevRadioStation() {
+            selectAndPlayStation((currentIndex - 1 + STATIONS.length) % STATIONS.length);
         }
     </script>
 </body>
