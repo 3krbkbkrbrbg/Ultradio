@@ -3,14 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Ultradio | رادیو آنلاین نوستالژیک</title>
+    <title>Ultradio | استریم زنده رادیو نوستالژیک</title>
     <meta name="theme-color" content="#000080">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Ultradio">
     <link rel="icon" type="image/svg+xml" href="icon.svg">
-    <link rel="apple-touch-icon" href="icon.svg">
     <link rel="manifest" href="manifest.json">
     <link href="https://cdn.jsdelivr.net/npm/vazirmatn@33.0.3/Vazirmatn-font-face.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,9 +22,9 @@
             --win-shadow-dark: #404040;
             --win-shadow-light: #FFFFFF;
             --win-card-bg: #D4D0C8;
-            --win-border-light: #FFFFFF;
-            --win-border-dark: #808080;
-            --win-border-black: #000000;
+            --accent-green: #00E676;
+            --accent-yellow: #FFFF00;
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
         }
 
         * {
@@ -42,8 +40,8 @@
             height: 100%;
             height: 100dvh;
             width: 100%;
-            overflow: hidden;
             background-color: #008080; /* Windows 95 Desktop Teal */
+            overflow: hidden;
         }
 
         body {
@@ -53,8 +51,8 @@
             padding: 0;
         }
 
-        /* Spotify-inspired Mobile Shell with Win95 Aesthetic */
-        .spotify-win95-shell {
+        /* Minimalist Mobile Window Shell */
+        .app-container {
             width: 100%;
             max-width: 480px;
             height: 100%;
@@ -63,71 +61,208 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            box-shadow: 0 0 35px rgba(0,0,0,0.6);
             border-left: 2px solid var(--win-shadow-light);
-            border-right: 2px solid var(--win-border-black);
+            border-right: 2px solid #000;
             overflow: hidden;
         }
 
-        /* Top Win95 Titlebar */
-        .app-topbar {
+        /* Win95 Header Bar */
+        .win-titlebar {
             background: linear-gradient(90deg, var(--win-dark-blue), var(--win-light-blue));
             color: #FFFFFF;
-            padding: 8px 12px;
+            padding: 7px 10px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 800;
-            letter-spacing: 0.5px;
             flex-shrink: 0;
-            border-bottom: 2px solid var(--win-border-black);
+            border-bottom: 2px solid #000;
             z-index: 20;
         }
 
-        .win95-btn-box {
+        .win-controls {
             display: flex;
-            gap: 4px;
+            gap: 3px;
         }
 
-        .win95-icon-btn {
-            width: 18px;
-            height: 16px;
+        .win-btn {
+            width: 16px;
+            height: 14px;
             background: var(--win-bg);
             border-top: 1px solid #FFF;
             border-left: 1px solid #FFF;
             border-right: 1px solid #000;
             border-bottom: 1px solid #000;
             color: #000;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* Spotify-like Filter Chips Bar (Horizontal Scroll) */
-        .filter-chips-bar {
-            background-color: #D8D4CC;
-            padding: 6px 10px;
+        /* Scrollable Main View */
+        .main-scroll-view {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 10px 145px 10px; /* Leave space for bottom player */
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* TOP SECTION: Featured Dynamic Album Cover & Live Track Metadata */
+        .now-playing-hero-card {
+            background: #111822;
+            border: 2px inset var(--win-shadow-dark);
+            border-radius: 4px;
+            padding: 12px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.7);
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Vinyl / Cover Art Box */
+        .hero-cover-box {
+            width: 90px;
+            height: 90px;
+            background: #000;
+            border: 2px solid #FFF;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-cover-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .hero-cover-img.rotating {
+            animation: spin 18s linear infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .hero-meta-box {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .hero-live-badge {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 10px;
+            font-weight: bold;
+            font-family: monospace;
+        }
+
+        .badge-live-tag {
+            background: #FF3333;
+            color: #FFF;
+            padding: 1px 6px;
+            border-radius: 2px;
+            font-size: 9px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .pulse-dot {
+            width: 5px;
+            height: 5px;
+            background: #FFF;
+            border-radius: 50%;
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        .hero-station-title {
+            color: #FFFFFF;
+            font-size: 14px;
+            font-weight: 800;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .hero-song-name {
+            color: var(--win-lcd-green);
+            font-size: 12px;
+            font-family: monospace;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-shadow: 0 0 5px rgba(57, 255, 20, 0.4);
+        }
+
+        .hero-artist-name {
+            color: #A0AEC0;
+            font-size: 11px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 16-Band Micro Spectrum */
+        .hero-spectrum {
+            display: flex;
+            align-items: flex-end;
+            height: 18px;
+            gap: 2px;
+            margin-top: 4px;
+        }
+
+        .hero-bar {
+            flex: 1;
+            background: linear-gradient(to top, var(--win-lcd-green) 50%, #FF0 85%, #F00 100%);
+            height: 15%;
+            border-radius: 1px 1px 0 0;
+            transition: height 0.1s ease;
+        }
+
+        /* Horizontal Genre Filter Bar (Spotify Chips Style) */
+        .genre-chips-scroll {
             display: flex;
             gap: 6px;
             overflow-x: auto;
-            flex-shrink: 0;
-            border-bottom: 1px solid var(--win-border-dark);
             scrollbar-width: none;
-            -ms-overflow-style: none;
+            flex-shrink: 0;
+            padding-bottom: 2px;
         }
-        .filter-chips-bar::-webkit-scrollbar {
-            display: none;
-        }
+        .genre-chips-scroll::-webkit-scrollbar { display: none; }
 
-        .retro-chip {
+        .genre-chip {
             background: var(--win-bg);
             border-top: 1.5px solid #FFF;
             border-left: 1.5px solid #FFF;
-            border-right: 1.5px solid #404040;
-            border-bottom: 1.5px solid #404040;
+            border-right: 1.5px solid var(--win-shadow-dark);
+            border-bottom: 1.5px solid var(--win-shadow-dark);
             padding: 4px 10px;
             font-size: 11px;
             font-weight: bold;
@@ -135,10 +270,9 @@
             white-space: nowrap;
             cursor: pointer;
             border-radius: 2px;
-            transition: all 0.1s;
         }
 
-        .retro-chip.active {
+        .genre-chip.active {
             background: var(--win-dark-blue);
             color: #FFF;
             border-top: 1.5px solid #000;
@@ -147,191 +281,28 @@
             border-bottom: 1.5px solid #FFF;
         }
 
-        /* Scrollable Browse Content (Spotify Mobile Home Style) */
-        .scrollable-feed {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px 10px 145px 10px; /* space for bottom sticky player */
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* Hero Winamp LCD & Spectrum Header */
-        .hero-player-card {
-            background: var(--win-lcd-bg);
-            border: 2px inset var(--win-shadow-dark);
-            border-radius: 4px;
-            padding: 10px 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.15);
-            flex-shrink: 0;
-        }
-
-        .hero-top-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-family: monospace;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .lcd-kbps {
-            color: var(--win-lcd-green);
-        }
-
-        .lcd-badge-live {
-            color: #888;
-            font-size: 11px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .lcd-badge-live.playing {
-            color: #FF3333;
-        }
-        .lcd-badge-live.buffering {
-            color: #FFCC00;
-        }
-
-        .hero-song-title {
-            color: var(--win-lcd-green);
-            font-family: monospace;
-            font-size: 14px;
-            font-weight: bold;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            text-shadow: 0 0 6px rgba(57, 255, 20, 0.5);
-        }
-
-        .hero-spectrum {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            height: 36px;
-            gap: 2px;
-            padding-top: 2px;
-        }
-
-        .spec-bar {
-            flex: 1;
-            background: linear-gradient(to top, var(--win-lcd-green) 50%, #FFFF00 80%, #FF0000 100%);
-            height: 15%;
-            transition: height 0.12s ease;
-            border-radius: 1px 1px 0 0;
-        }
-
-        /* Section Title (Spotify style headers) */
-        .section-label {
-            font-size: 12.5px;
+        /* SECTION: Stations Channel List */
+        .section-heading {
+            font-size: 12px;
             font-weight: 800;
             color: #000;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 2px 2px;
         }
 
-        /* Quick Play Grid (Spotify 2x2 / 2x3 Top Cards) */
-        .quick-play-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
+        .channels-list-box {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
 
-        .quick-card {
+        .channel-row-card {
             background: var(--win-card-bg);
             border-top: 1.5px solid #FFF;
             border-left: 1.5px solid #FFF;
             border-right: 1.5px solid var(--win-shadow-dark);
             border-bottom: 1.5px solid var(--win-shadow-dark);
-            border-radius: 3px;
-            padding: 6px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: 0.1s;
-        }
-
-        .quick-card:active {
-            border-top: 1.5px solid var(--win-shadow-dark);
-            border-left: 1.5px solid var(--win-shadow-dark);
-            border-right: 1.5px solid #FFF;
-            border-bottom: 1.5px solid #FFF;
-        }
-
-        .quick-card.active {
-            background: var(--win-dark-blue);
-            color: #FFF;
-        }
-
-        .quick-thumb {
-            width: 38px;
-            height: 38px;
-            background: #000;
-            border: 1px inset #808080;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--win-lcd-green);
-            font-size: 16px;
-            flex-shrink: 0;
-        }
-
-        .quick-card.active .quick-thumb {
-            color: #FFFF00;
-            border-color: #FFF;
-        }
-
-        .quick-text {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .quick-title {
-            font-size: 11.5px;
-            font-weight: 800;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            color: #000;
-        }
-
-        .quick-card.active .quick-title {
-            color: #FFF;
-        }
-
-        .quick-sub {
-            font-size: 9.5px;
-            color: #666;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .quick-card.active .quick-sub {
-            color: #D4D0C8;
-        }
-
-        /* Spotify-style Station List Feed */
-        .station-list-feed {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .station-row-item {
-            background: #D4D0C8;
-            border-top: 1px solid #FFF;
-            border-left: 1px solid #FFF;
-            border-right: 1px solid var(--win-shadow-dark);
-            border-bottom: 1px solid var(--win-shadow-dark);
             border-radius: 3px;
             padding: 8px 10px;
             display: flex;
@@ -339,22 +310,22 @@
             justify-content: space-between;
             gap: 10px;
             cursor: pointer;
-            transition: all 0.1s;
+            transition: all 0.1s ease;
         }
 
-        .station-row-item:active {
-            background: #C0C0C0;
+        .channel-row-card:active {
+            background: #B8B4AC;
         }
 
-        .station-row-item.active {
+        .channel-row-card.active {
             background: var(--win-dark-blue) !important;
-            border-top: 1px solid #000;
-            border-left: 1px solid #000;
-            border-right: 1px solid #FFF;
-            border-bottom: 1px solid #FFF;
+            border-top: 1.5px solid #000 !important;
+            border-left: 1.5px solid #000 !important;
+            border-right: 1.5px solid #FFF !important;
+            border-bottom: 1.5px solid #FFF !important;
         }
 
-        .row-left {
+        .channel-left {
             display: flex;
             align-items: center;
             gap: 10px;
@@ -362,31 +333,32 @@
             min-width: 0;
         }
 
-        .row-icon-box {
-            width: 36px;
-            height: 36px;
-            background: #111;
+        .channel-avatar {
+            width: 38px;
+            height: 38px;
+            background: #000;
             border: 1px inset #808080;
+            border-radius: 3px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #00FF66;
-            font-size: 15px;
+            color: var(--win-lcd-green);
+            font-size: 16px;
             flex-shrink: 0;
-            border-radius: 2px;
+            overflow: hidden;
         }
 
-        .station-row-item.active .row-icon-box {
-            color: #FFFF00;
-            background: #000;
+        .channel-row-card.active .channel-avatar {
+            color: var(--accent-yellow);
+            border-color: #FFF;
         }
 
-        .row-meta {
+        .channel-info-text {
             flex: 1;
             min-width: 0;
         }
 
-        .row-name {
+        .channel-name-fa {
             font-size: 12.5px;
             font-weight: 800;
             color: #000;
@@ -395,11 +367,11 @@
             gap: 6px;
         }
 
-        .station-row-item.active .row-name {
+        .channel-row-card.active .channel-name-fa {
             color: #FFF;
         }
 
-        .row-desc {
+        .channel-subtitle {
             font-size: 10px;
             color: #555;
             white-space: nowrap;
@@ -408,71 +380,73 @@
             margin-top: 2px;
         }
 
-        .station-row-item.active .row-desc {
+        .channel-row-card.active .channel-subtitle {
             color: #D4D0C8;
         }
 
-        .row-right-badge {
+        .channel-bitrate-tag {
             font-size: 9px;
             font-weight: bold;
+            font-family: monospace;
             padding: 2px 6px;
             background: var(--win-shadow-dark);
             color: #FFF;
             border-radius: 2px;
             flex-shrink: 0;
-            font-family: monospace;
         }
 
-        .station-row-item.active .row-right-badge {
-            background: #FFFF00;
+        .channel-row-card.active .channel-bitrate-tag {
+            background: var(--accent-yellow);
             color: #000;
         }
 
-        /* STICKY BOTTOM PLAYER (Spotify Mobile Player Bar + Winamp Controls) */
-        .spotify-sticky-player {
+        /* STICKY BOTTOM PLAYBACK BAR (Always visible in mobile Chrome) */
+        .bottom-sticky-player {
             position: absolute;
-            bottom: 26px; /* above Win95 taskbar */
+            bottom: calc(26px + var(--safe-bottom));
             left: 0;
             right: 0;
-            background: #1C2430;
+            background: #141A22;
             border-top: 2px solid var(--win-light-blue);
-            padding: 8px 10px;
+            padding: 8px 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 8px;
-            z-index: 30;
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.4);
+            z-index: 40;
+            box-shadow: 0 -4px 16px rgba(0,0,0,0.5);
         }
 
-        .player-left-info {
+        .mini-meta-click {
             display: flex;
             align-items: center;
             gap: 8px;
             flex: 1;
             min-width: 0;
+            cursor: pointer;
         }
 
-        .mini-cover {
+        .mini-player-cover {
             width: 36px;
             height: 36px;
-            background: #000080;
+            background: var(--win-dark-blue);
             border: 1px solid #FFF;
+            border-radius: 3px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #FFF;
-            font-size: 16px;
-            border-radius: 3px;
+            font-size: 15px;
             flex-shrink: 0;
+            overflow: hidden;
         }
 
-        .mini-text-box {
+        .mini-player-texts {
             flex: 1;
             min-width: 0;
         }
 
-        .mini-title {
+        .mini-station-name {
             color: #FFFFFF;
             font-size: 12px;
             font-weight: 800;
@@ -481,7 +455,7 @@
             text-overflow: ellipsis;
         }
 
-        .mini-status {
+        .mini-live-status {
             color: var(--win-lcd-green);
             font-size: 9.5px;
             font-family: monospace;
@@ -490,21 +464,21 @@
             text-overflow: ellipsis;
         }
 
-        .player-right-controls {
+        .mini-controls-cluster {
             display: flex;
             align-items: center;
             gap: 5px;
             flex-shrink: 0;
         }
 
-        .player-btn {
+        .retro-player-btn {
             background: var(--win-bg);
             border-top: 2px solid #FFF;
             border-left: 2px solid #FFF;
             border-right: 2px solid #000;
             border-bottom: 2px solid #000;
             padding: 6px 10px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: bold;
             color: #000;
             cursor: pointer;
@@ -514,37 +488,39 @@
             justify-content: center;
         }
 
-        .player-btn.play-btn {
-            background: #00E676;
+        .retro-player-btn.play-btn-green {
+            background: var(--accent-green);
             color: #000;
             padding: 6px 14px;
-            font-size: 15px;
+            font-size: 14px;
         }
 
-        .player-btn:active {
+        .retro-player-btn:active {
             border-top: 2px solid #000;
             border-left: 2px solid #000;
             border-right: 2px solid #FFF;
             border-bottom: 2px solid #FFF;
         }
 
-        /* Fixed Bottom Windows 95 Taskbar */
-        .win-taskbar-fixed {
+        /* Fixed Taskbar */
+        .fixed-win-taskbar {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            height: 26px;
+            height: calc(26px + var(--safe-bottom));
+            padding-bottom: var(--safe-bottom);
             background: var(--win-bg);
             border-top: 1.5px solid #FFF;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 6px;
-            z-index: 30;
+            padding-left: 8px;
+            padding-right: 8px;
+            z-index: 40;
         }
 
-        .taskbar-start {
+        .start-btn {
             background: var(--win-bg);
             border-top: 1.5px solid #FFF;
             border-left: 1.5px solid #FFF;
@@ -560,7 +536,7 @@
             cursor: pointer;
         }
 
-        .taskbar-signature {
+        .signature-pill {
             border: 1px inset #808080;
             padding: 1px 6px;
             font-family: monospace;
@@ -572,135 +548,106 @@
 </head>
 <body>
 
-    <div class="spotify-win95-shell">
-        <!-- Top Win95 Titlebar -->
-        <header class="app-topbar">
+    <div class="app-container">
+        <!-- Windows 95 Top Window Header -->
+        <div class="win-titlebar">
             <div style="display: flex; align-items: center; gap: 6px;">
                 <i class="fa-solid fa-radio"></i>
-                <span>Ultradio 95 — رادیو آنلاین نوستالژیک</span>
+                <span>Ultradio 95 — استریم زنده رادیو نوستالژیک</span>
             </div>
-            <div class="win95-btn-box">
-                <div class="win95-icon-btn">_</div>
-                <div class="win95-icon-btn">□</div>
-                <div class="win95-icon-btn">✕</div>
+            <div class="win-controls">
+                <div class="win-btn">_</div>
+                <div class="win-btn">□</div>
+                <div class="win-btn">✕</div>
             </div>
-        </header>
-
-        <!-- Spotify-style Category Filter Chips (Persian, Rap, Pop, Phonk, Lofi, Rock, Chill) -->
-        <div class="filter-chips-bar">
-            <button class="retro-chip active" onclick="applyCategoryFilter('all')">همه (۱۲)</button>
-            <button class="retro-chip" onclick="applyCategoryFilter('persian')">🇮🇷 فارسی و سنتی</button>
-            <button class="retro-chip" onclick="applyCategoryFilter('rap')">🎤 رپ و هیپ‌هاپ</button>
-            <button class="retro-chip" onclick="applyCategoryFilter('pop')">🎵 پاپ و دنس</button>
-            <button class="retro-chip" onclick="applyCategoryFilter('phonk')">⚡ دریفت فانک</button>
-            <button class="retro-chip" onclick="applyCategoryFilter('lofi')">☕ لوفای و آرامش</button>
-            <button class="retro-chip" onclick="applyCategoryFilter('rock')">🎸 راک و متال</button>
         </div>
 
-        <!-- Scrollable Feed: Hero LCD + Spotify-style Cards & List -->
-        <main class="scrollable-feed" id="main-scroll-feed">
-            <!-- Winamp Digital LCD Hero Card -->
-            <div class="hero-player-card">
-                <div class="hero-top-meta">
-                    <span class="lcd-kbps" id="hero-bitrate">320 KBPS • STEREO</span>
-                    <span class="lcd-badge-live" id="hero-status">■ STOPPED</span>
+        <!-- Scrollable Feed: Hero Cover + Category Filters + Stations -->
+        <div class="main-scroll-view" id="feed-scroll">
+            
+            <!-- TOP CARD: Now Playing Cover Art + Live Song Info -->
+            <div class="now-playing-hero-card">
+                <div class="hero-cover-box">
+                    <img id="hero-cover-image" class="hero-cover-img" src="icon.svg" alt="Album Cover">
                 </div>
-                <div class="hero-song-title" id="hero-track-title">
-                    ♫ رادیو پاپ خارجی (Pop Hits)
-                </div>
-                <!-- 16-Band Spectrum -->
-                <div class="hero-spectrum" id="hero-spectrum-box"></div>
-            </div>
-
-            <!-- Spotify-like "Quick Play" 2-Column Grid -->
-            <div class="section-label">
-                <span>⚡ دسترسی فوری و پرطرفدار:</span>
-            </div>
-            <div class="quick-play-grid">
-                <div class="quick-card active" id="quick-0" onclick="selectAndPlayStation(0)">
-                    <div class="quick-thumb"><i class="fa-solid fa-music"></i></div>
-                    <div class="quick-text">
-                        <div class="quick-title">پاپ خارجی</div>
-                        <div class="quick-sub">Pop Hits • 320k</div>
+                <div class="hero-meta-box">
+                    <div class="hero-live-badge">
+                        <span class="badge-live-tag" id="live-indicator"><span class="pulse-dot"></span> LIVE</span>
+                        <span style="color: var(--win-lcd-green);" id="hero-bitrate-tag">320 KBPS</span>
                     </div>
-                </div>
-                <div class="quick-card" id="quick-3" onclick="selectAndPlayStation(3)">
-                    <div class="quick-thumb"><i class="fa-solid fa-record-vinyl"></i></div>
-                    <div class="quick-text">
-                        <div class="quick-title">فارسی قدیمی</div>
-                        <div class="quick-sub">Classic Persian • 256k</div>
-                    </div>
-                </div>
-                <div class="quick-card" id="quick-4" onclick="selectAndPlayStation(4)">
-                    <div class="quick-thumb"><i class="fa-solid fa-microphone-lines"></i></div>
-                    <div class="quick-text">
-                        <div class="quick-title">رپ فارسی</div>
-                        <div class="quick-sub">Persian Rap • 320k</div>
-                    </div>
-                </div>
-                <div class="quick-card" id="quick-2" onclick="selectAndPlayStation(2)">
-                    <div class="quick-thumb"><i class="fa-solid fa-mug-hot"></i></div>
-                    <div class="quick-text">
-                        <div class="quick-title">لوفای (Lo-Fi)</div>
-                        <div class="quick-sub">Lo-Fi Beats • 192k</div>
-                    </div>
+                    <div class="hero-station-title" id="hero-station-name">پاپ خارجی (Pop Hits)</div>
+                    <div class="hero-song-name" id="hero-track-title">♫ در حال لود اطلاعات آهنگ...</div>
+                    <div class="hero-artist-name" id="hero-artist-title">Ultradio Streaming Network</div>
+                    <!-- Animated Spectrum -->
+                    <div class="hero-spectrum" id="spectrum-bars"></div>
                 </div>
             </div>
 
-            <!-- Full List of All 12 Stations (Spotify Row Layout with Win95 Styling) -->
-            <div class="section-label">
-                <span>📻 تمام کانال‌های زنده رادیو:</span>
+            <!-- Horizontal Category Chips (Spotify Style) -->
+            <div class="genre-chips-scroll">
+                <button class="genre-chip active" onclick="filterGenre('all', this)">همه (۱۲)</button>
+                <button class="genre-chip" onclick="filterGenre('persian', this)">🇮🇷 فارسی سنتی</button>
+                <button class="genre-chip" onclick="filterGenre('rap', this)">🎤 رپ فارسی</button>
+                <button class="genre-chip" onclick="filterGenre('pop', this)">🎵 پاپ جهانی</button>
+                <button class="genre-chip" onclick="filterGenre('phonk', this)">⚡ دریفت فانک</button>
+                <button class="genre-chip" onclick="filterGenre('lofi', this)">☕ لوفای و تمرکز</button>
+                <button class="genre-chip" onclick="filterGenre('rock', this)">🎸 راک و متال</button>
             </div>
-            <div class="station-list-feed" id="station-feed-container">
-                <!-- Dynamically Rendered -->
-            </div>
-        </main>
 
-        <!-- SPOTIFY-STYLE STICKY BOTTOM PLAYER BAR -->
-        <div class="spotify-sticky-player">
-            <div class="player-left-info" onclick="togglePlayState()">
-                <div class="mini-cover">
-                    <i class="fa-solid fa-radio"></i>
+            <!-- Channel List Heading -->
+            <div class="section-heading">
+                <span>📻 ایستگاه‌های رادیویی:</span>
+                <span style="font-size: 10px; color: #555;" id="channel-count-tag">۱۲ کانال آنلاین</span>
+            </div>
+
+            <!-- Channels Feed -->
+            <div class="channels-list-box" id="channels-container"></div>
+        </div>
+
+        <!-- STICKY BOTTOM PLAYBACK BAR (Spotify Mobile Style) -->
+        <div class="bottom-sticky-player">
+            <div class="mini-meta-click" onclick="togglePlayback()">
+                <div class="mini-player-cover">
+                    <img id="mini-cover-img" src="icon.svg" style="width:100%;height:100%;object-fit:cover;">
                 </div>
-                <div class="mini-text-box">
-                    <div class="mini-title" id="mini-player-title">پاپ خارجی (Pop Hits)</div>
-                    <div class="mini-status" id="mini-player-status">آماده پخش • 320 kbps</div>
+                <div class="mini-player-texts">
+                    <div class="mini-station-name" id="mini-st-name">پاپ خارجی (Pop Hits)</div>
+                    <div class="mini-live-status" id="mini-live-st">آماده پخش • 320 kbps</div>
                 </div>
             </div>
-            <div class="player-right-controls">
-                <button class="player-btn" onclick="prevRadioStation()"><i class="fa-solid fa-backward-step"></i></button>
-                <button class="player-btn play-btn" id="main-play-btn" onclick="togglePlayState()"><i class="fa-solid fa-play"></i></button>
-                <button class="player-btn" onclick="nextRadioStation()"><i class="fa-solid fa-forward-step"></i></button>
+            <div class="mini-controls-cluster">
+                <button class="retro-player-btn" onclick="prevStation()"><i class="fa-solid fa-backward-step"></i></button>
+                <button class="retro-player-btn play-btn-green" id="sticky-play-btn" onclick="togglePlayback()"><i class="fa-solid fa-play"></i></button>
+                <button class="retro-player-btn" onclick="nextStation()"><i class="fa-solid fa-forward-step"></i></button>
             </div>
         </div>
 
         <!-- Fixed Win95 Bottom Taskbar -->
-        <footer class="win-taskbar-fixed">
-            <div class="taskbar-start" onclick="togglePlayState()">
+        <div class="fixed-win-taskbar">
+            <div class="start-btn" onclick="togglePlayback()">
                 <i class="fa-brands fa-windows" style="color: var(--win-dark-blue);"></i>
                 <span>Start</span>
             </div>
-            <div class="taskbar-signature">
+            <div class="signature-pill">
                 Crafted with passion by Hellboy Coder ⚡
             </div>
-        </footer>
+        </div>
     </div>
 
     <script>
-        // All 12 Complete Live Channels
         const STATIONS = [
-            { id: "pop", cat: "pop", icon: "fa-music", nameFa: "پاپ خارجی", nameEn: "Pop Hits", url: "https://radio.9craft.ir:7443/pop", bitrate: "320 kbps", desc: "بهترین آهنگ‌های پاپ بین‌المللی و تاپ چارت" },
-            { id: "pop2", cat: "pop", icon: "fa-compact-disc", nameFa: "پاپ کلاب و دنس", nameEn: "Pop Club & Dance", url: "https://radio.9craft.ir:7443/pop2", bitrate: "320 kbps", desc: "میکس‌های پرانرژی و دنس روز" },
-            { id: "lofi", cat: "lofi", icon: "fa-mug-hot", nameFa: "لوفای (Lo-Fi)", nameEn: "Lo-Fi Beats", url: "https://radio.9craft.ir:7443/lofi", bitrate: "192 kbps", desc: "بیت‌های آرامش‌بخش برای مطالعه و تمرکز" },
-            { id: "persian", cat: "persian", icon: "fa-record-vinyl", nameFa: "فارسی قدیمی", nameEn: "Classic Persian", url: "https://radio.9craft.ir:7443/persian", bitrate: "256 kbps", desc: "نوستالژی طلایی و ترانه‌های ماندگار ایرانی" },
-            { id: "prap", cat: "rap", icon: "fa-microphone-lines", nameFa: "رپ فارسی", nameEn: "Persian Rap", url: "https://radio.9craft.ir:7443/prap", bitrate: "320 kbps", desc: "برترین آثار هیپ‌هاپ و رپ زیرزمینی و نسل‌های فارسی" },
-            { id: "hiphop", cat: "rap", icon: "fa-headphones", nameFa: "هیپ هاپ جهانی", nameEn: "Global Hip-Hop", url: "https://radio.9craft.ir:7443/hiphop", bitrate: "320 kbps", desc: "ترک‌های بیس‌دار هیپ‌هاپ اولداسکول تا ترپ" },
-            { id: "phonk", cat: "phonk", icon: "fa-fire", nameFa: "دریفت فانک", nameEn: "Drift Phonk", url: "https://radio.9craft.ir:7443/phonk", bitrate: "320 kbps", desc: "بیت‌های پرشتاب دریفت و آگورفوبیا" },
-            { id: "phonk2", cat: "phonk", icon: "fa-bolt", nameFa: "فانک هایپر", nameEn: "Phonk Hyper", url: "https://radio.9craft.ir:7443/phonk2", bitrate: "320 kbps", desc: "فانک متال، ممفیس و موج تاریک" },
-            { id: "rock", cat: "rock", icon: "fa-guitar", nameFa: "راک و متال", nameEn: "Classic & Hard Rock", url: "https://radio.9craft.ir:7443/rock", bitrate: "320 kbps", desc: "سولوهای افسانه‌ای گیتار و هارد راک" },
-            { id: "relax", cat: "lofi", icon: "fa-moon", nameFa: "آرامش بخش", nameEn: "Relax & Ambient", url: "https://radio.9craft.ir:7443/relax", bitrate: "256 kbps", desc: "موسیقی امبینت، مدیتیشن و امواج التیام‌بخش" },
-            { id: "soul", cat: "persian", icon: "fa-heart", nameFa: "سول و بلوز", nameEn: "Soul & Neo-Soul", url: "https://radio.9craft.ir:7443/soul", bitrate: "256 kbps", desc: "نوای احساسی سول و آر اند بی ریشه‌دار" },
-            { id: "ost", cat: "pop", icon: "fa-film", nameFa: "موسیقی متن (OST)", nameEn: "Soundtracks & OST", url: "https://radio.9craft.ir:7443/ost", bitrate: "320 kbps", desc: "ماندگارترین موسیقی متن فیلم و انیمه" }
+            { id: "pop", cat: "pop", icon: "fa-music", nameFa: "پاپ خارجی", nameEn: "Pop Hits", url: "https://radio.9craft.ir:7443/pop", bitrate: "320 kbps", desc: "بهترین آهنگ‌های پاپ بین‌المللی و تاپ چارت", defaultCover: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&auto=format&fit=crop&q=60" },
+            { id: "pop2", cat: "pop", icon: "fa-compact-disc", nameFa: "پاپ کلاب و دنس", nameEn: "Pop Club & Dance", url: "https://radio.9craft.ir:7443/pop2", bitrate: "320 kbps", desc: "میکس‌های پرانرژی و دنس روز", defaultCover: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&auto=format&fit=crop&q=60" },
+            { id: "lofi", cat: "lofi", icon: "fa-mug-hot", nameFa: "لوفای (Lo-Fi)", nameEn: "Lo-Fi Beats", url: "https://radio.9craft.ir:7443/lofi", bitrate: "192 kbps", desc: "بیت‌های آرامش‌بخش برای مطالعه و تمرکز", defaultCover: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=300&auto=format&fit=crop&q=60" },
+            { id: "persian", cat: "persian", icon: "fa-record-vinyl", nameFa: "فارسی قدیمی", nameEn: "Classic Persian", url: "https://radio.9craft.ir:7443/persian", bitrate: "256 kbps", desc: "نوستالژی طلایی و ترانه‌های ماندگار ایرانی", defaultCover: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=300&auto=format&fit=crop&q=60" },
+            { id: "prap", cat: "rap", icon: "fa-microphone-lines", nameFa: "رپ فارسی", nameEn: "Persian Rap", url: "https://radio.9craft.ir:7443/prap", bitrate: "320 kbps", desc: "برترین آثار هیپ‌هاپ و رپ زیرزمینی", defaultCover: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=300&auto=format&fit=crop&q=60" },
+            { id: "hiphop", cat: "rap", icon: "fa-headphones", nameFa: "هیپ هاپ جهانی", nameEn: "Global Hip-Hop", url: "https://radio.9craft.ir:7443/hiphop", bitrate: "320 kbps", desc: "ترک‌های بیس‌دار هیپ‌هاپ اولداسکول تا ترپ", defaultCover: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&auto=format&fit=crop&q=60" },
+            { id: "phonk", cat: "phonk", icon: "fa-fire", nameFa: "دریفت فانک", nameEn: "Drift Phonk", url: "https://radio.9craft.ir:7443/phonk", bitrate: "320 kbps", desc: "بیت‌های پرشتاب دریفت و آگورفوبیا", defaultCover: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=300&auto=format&fit=crop&q=60" },
+            { id: "phonk2", cat: "phonk", icon: "fa-bolt", nameFa: "فانک هایپر", nameEn: "Phonk Hyper", url: "https://radio.9craft.ir:7443/phonk2", bitrate: "320 kbps", desc: "فانک متال، ممفیس و موج تاریک", defaultCover: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=300&auto=format&fit=crop&q=60" },
+            { id: "rock", cat: "rock", icon: "fa-guitar", nameFa: "راک و متال", nameEn: "Classic & Hard Rock", url: "https://radio.9craft.ir:7443/rock", bitrate: "320 kbps", desc: "سولوهای افسانه‌ای گیتار و هارد راک", defaultCover: "https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?w=300&auto=format&fit=crop&q=60" },
+            { id: "relax", cat: "lofi", icon: "fa-moon", nameFa: "آرامش بخش", nameEn: "Relax & Ambient", url: "https://radio.9craft.ir:7443/relax", bitrate: "256 kbps", desc: "موسیقی امبینت، مدیتیشن و امواج التیام‌بخش", defaultCover: "https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?w=300&auto=format&fit=crop&q=60" },
+            { id: "soul", cat: "persian", icon: "fa-heart", nameFa: "سول و بلوز", nameEn: "Soul & Neo-Soul", url: "https://radio.9craft.ir:7443/soul", bitrate: "256 kbps", desc: "نوای احساسی سول و آر اند بی ریشه‌دار", defaultCover: "https://images.unsplash.com/photo-1520523839898-507128003666?w=300&auto=format&fit=crop&q=60" },
+            { id: "ost", cat: "pop", icon: "fa-film", nameFa: "موسیقی متن (OST)", nameEn: "Soundtracks & OST", url: "https://radio.9craft.ir:7443/ost", bitrate: "320 kbps", desc: "ماندگارترین موسیقی متن فیلم و انیمه", defaultCover: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&auto=format&fit=crop&q=60" }
         ];
 
         let currentIndex = 0;
@@ -709,158 +656,170 @@
         let spectrumInterval = null;
         let currentFilter = 'all';
 
-        // Initialize 16 spectrum bars
-        const spectrumBox = document.getElementById('hero-spectrum-box');
-        for (let i = 0; i < 16; i++) {
-            const b = document.createElement('div');
-            b.className = 'spec-bar';
-            spectrumBox.appendChild(b);
+        // Render Spectrum Bars
+        const spectrumContainer = document.getElementById('spectrum-bars');
+        for(let i=0; i<16; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'hero-bar';
+            spectrumContainer.appendChild(bar);
         }
 
-        // Render station rows
-        function renderStationRows() {
-            const container = document.getElementById('station-feed-container');
+        function renderChannelList() {
+            const container = document.getElementById('channels-container');
             container.innerHTML = '';
 
+            let count = 0;
             STATIONS.forEach((station, index) => {
-                if (currentFilter !== 'all' && station.cat !== currentFilter) {
-                    return;
-                }
+                if (currentFilter !== 'all' && station.cat !== currentFilter) return;
+                count++;
 
-                const isActive = (index === currentIndex);
-                const row = document.createElement('div');
-                row.className = `station-row-item ${isActive ? 'active' : ''}`;
-                row.id = `row-st-${index}`;
-                row.onclick = () => selectAndPlayStation(index);
+                const isCurrent = (index === currentIndex);
+                const card = document.createElement('div');
+                card.className = `channel-row-card ${isCurrent ? 'active' : ''}`;
+                card.id = `channel-row-${index}`;
+                card.onclick = () => selectStation(index);
 
-                row.innerHTML = `
-                    <div class="row-left">
-                        <div class="row-icon-box">
+                card.innerHTML = `
+                    <div class="channel-left">
+                        <div class="channel-avatar">
                             <i class="fa-solid ${station.icon}"></i>
                         </div>
-                        <div class="row-meta">
-                            <div class="row-name">
+                        <div class="channel-info-text">
+                            <div class="channel-name-fa">
                                 <span>${station.nameFa}</span>
                                 <span style="font-size: 10px; opacity: 0.8;">(${station.nameEn})</span>
                             </div>
-                            <div class="row-desc">${station.desc}</div>
+                            <div class="channel-subtitle">${station.desc}</div>
                         </div>
                     </div>
-                    <span class="row-right-badge">${station.bitrate}</span>
+                    <span class="channel-bitrate-tag">${station.bitrate}</span>
                 `;
-                container.appendChild(row);
+                container.appendChild(card);
             });
+
+            document.getElementById('channel-count-tag').textContent = `${count} کانال`;
         }
 
-        function applyCategoryFilter(cat) {
+        function filterGenre(cat, btn) {
             currentFilter = cat;
-            document.querySelectorAll('.retro-chip').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            renderStationRows();
+            document.querySelectorAll('.genre-chip').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            renderChannelList();
         }
 
-        function animateSpectrum() {
-            const bars = document.querySelectorAll('.spec-bar');
-            bars.forEach(bar => {
-                if (isPlaying) {
-                    bar.style.height = (Math.floor(Math.random() * 85) + 15) + '%';
-                } else {
-                    bar.style.height = '15%';
-                }
+        function animateBars() {
+            const bars = document.querySelectorAll('.hero-bar');
+            bars.forEach(b => {
+                b.style.height = isPlaying ? (Math.floor(Math.random() * 85) + 15) + '%' : '15%';
             });
         }
 
-        function selectAndPlayStation(index) {
+        // Live Metadata Fetching from 9craft API
+        async function fetchSongMetadata() {
+            try {
+                const res = await fetch('https://radio.9craft.ir/v1/api/genre/all');
+                if (res.ok) {
+                    const json = await res.json();
+                    if (json && Array.isArray(json.data)) {
+                        const currentStation = STATIONS[currentIndex];
+                        const meta = json.data.find(d => d.genre && d.genre.toLowerCase() === currentStation.id.toLowerCase());
+                        if (meta) {
+                            if (meta.title) document.getElementById('hero-track-title').textContent = `♫ ${meta.title}`;
+                            if (meta.artist) document.getElementById('hero-artist-title').textContent = meta.artist;
+                            if (meta.cover_url) {
+                                document.getElementById('hero-cover-image').src = meta.cover_url;
+                                document.getElementById('mini-cover-img').src = meta.cover_url;
+                            }
+                        }
+                    }
+                }
+            } catch(e) {
+                // Fallback gracefully
+            }
+        }
+
+        function selectStation(index) {
             currentIndex = index;
             const station = STATIONS[index];
 
-            // Update UI elements
-            document.getElementById('hero-track-title').textContent = `♫ ${station.nameFa} (${station.nameEn})`;
-            document.getElementById('hero-bitrate').textContent = `${station.bitrate} • STEREO`;
-            document.getElementById('mini-player-title').textContent = `${station.nameFa} (${station.nameEn})`;
-            document.getElementById('mini-player-status').textContent = `در حال پخش • ${station.bitrate}`;
+            // Update Hero Meta
+            document.getElementById('hero-station-name').textContent = `${station.nameFa} (${station.nameEn})`;
+            document.getElementById('hero-bitrate-tag').textContent = station.bitrate;
+            document.getElementById('hero-cover-image').src = station.defaultCover;
+            document.getElementById('mini-cover-img').src = station.defaultCover;
+            document.getElementById('hero-track-title').textContent = `♫ ${station.nameFa}`;
+            document.getElementById('hero-artist-title').textContent = station.desc;
 
-            // Quick card highlights
-            document.querySelectorAll('.quick-card').forEach(c => c.classList.remove('active'));
-            const qCard = document.getElementById(`quick-${index}`);
-            if (qCard) qCard.classList.add('active');
+            // Update Sticky Player
+            document.getElementById('mini-st-name').textContent = `${station.nameFa} (${station.nameEn})`;
+            document.getElementById('mini-live-st').textContent = `در حال اتصال • ${station.bitrate}`;
 
-            // Feed row highlights
-            renderStationRows();
-
+            renderChannelList();
             startPlayback();
+            fetchSongMetadata();
         }
 
         function startPlayback() {
             const station = STATIONS[currentIndex];
             audioPlayer.src = station.url;
 
-            const heroStatus = document.getElementById('hero-status');
-            heroStatus.textContent = '● BUFFERING...';
-            heroStatus.className = 'lcd-badge-live buffering';
-
-            document.getElementById('mini-player-status').textContent = 'در حال اتصال...';
+            const coverImg = document.getElementById('hero-cover-image');
 
             audioPlayer.play().then(() => {
                 isPlaying = true;
-                heroStatus.textContent = '● LIVE ON AIR';
-                heroStatus.className = 'lcd-badge-live playing';
+                coverImg.classList.add('rotating');
+                document.getElementById('sticky-play-btn').innerHTML = '<i class="fa-solid fa-pause"></i>';
+                document.getElementById('mini-live-st').textContent = `● پخش زنده • ${station.bitrate}`;
 
-                document.getElementById('main-play-btn').innerHTML = '<i class="fa-solid fa-pause"></i>';
-                document.getElementById('mini-player-status').textContent = `● پخش زنده • ${station.bitrate}`;
-
-                if (!spectrumInterval) {
-                    spectrumInterval = setInterval(animateSpectrum, 110);
-                }
+                if (!spectrumInterval) spectrumInterval = setInterval(animateBars, 100);
 
                 if ('mediaSession' in navigator) {
                     navigator.mediaSession.metadata = new MediaMetadata({
                         title: station.nameFa,
                         artist: `الترادیو — ${station.nameEn}`,
                         album: "Ultradio Windows 95 Live",
-                        artwork: [{ src: "icon.svg", sizes: "512x512", type: "image/svg+xml" }]
+                        artwork: [{ src: station.defaultCover, sizes: "300x300", type: "image/jpeg" }]
                     });
 
                     navigator.mediaSession.setActionHandler('play', startPlayback);
-                    navigator.mediaSession.setActionHandler('pause', togglePlayState);
-                    navigator.mediaSession.setActionHandler('previoustrack', prevRadioStation);
-                    navigator.mediaSession.setActionHandler('nexttrack', nextRadioStation);
+                    navigator.mediaSession.setActionHandler('pause', togglePlayback);
+                    navigator.mediaSession.setActionHandler('previoustrack', prevStation);
+                    navigator.mediaSession.setActionHandler('nexttrack', nextStation);
                 }
             }).catch(err => {
-                console.warn('Play error:', err);
-                heroStatus.textContent = '✕ RECONNECTING...';
-                heroStatus.className = 'lcd-badge-live buffering';
+                console.warn('Playback issue:', err);
+                document.getElementById('mini-live-st').textContent = '✕ تلاش برای اتصال مجدد...';
             });
         }
 
-        function togglePlayState() {
-            const heroStatus = document.getElementById('hero-status');
+        function togglePlayback() {
+            const coverImg = document.getElementById('hero-cover-image');
             if (isPlaying) {
                 audioPlayer.pause();
                 isPlaying = false;
-                heroStatus.textContent = '■ PAUSED';
-                heroStatus.className = 'lcd-badge-live';
-
-                document.getElementById('main-play-btn').innerHTML = '<i class="fa-solid fa-play"></i>';
-                document.getElementById('mini-player-status').textContent = 'متوقف شده';
+                coverImg.classList.remove('rotating');
+                document.getElementById('sticky-play-btn').innerHTML = '<i class="fa-solid fa-play"></i>';
+                document.getElementById('mini-live-st').textContent = 'متوقف شده';
                 clearInterval(spectrumInterval);
                 spectrumInterval = null;
-                animateSpectrum();
+                animateBars();
             } else {
                 startPlayback();
             }
         }
 
-        function nextRadioStation() {
-            selectAndPlayStation((currentIndex + 1) % STATIONS.length);
+        function nextStation() {
+            selectStation((currentIndex + 1) % STATIONS.length);
         }
 
-        function prevRadioStation() {
-            selectAndPlayStation((currentIndex - 1 + STATIONS.length) % STATIONS.length);
+        function prevStation() {
+            selectStation((currentIndex - 1 + STATIONS.length) % STATIONS.length);
         }
 
-        // Initial render
-        renderStationRows();
+        // Initialize view & periodic live metadata update
+        renderChannelList();
+        selectStation(0);
+        setInterval(fetchSongMetadata, 15000);
     </script>
 </body>
 </html>
