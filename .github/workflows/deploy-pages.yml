@@ -19,16 +19,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build Full React Web App & PWA
-        run: npm run build
+      - name: Prepare production build
+        run: |
+          mkdir -p dist
+          cp standalone.html dist/index.html
+          cp icon.svg dist/icon.svg || true
+          cp -r public/* dist/ 2>/dev/null || true
 
       - name: Deploy to GitHub Pages Branch (gh-pages)
         uses: JamesIves/github-pages-deploy-action@v4

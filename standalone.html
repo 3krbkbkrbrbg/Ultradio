@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Ultradio | استریم زنده رادیو نوستالژیک</title>
+    <meta name="theme-color" content="#000080">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="manifest" href="manifest.json">
+    <link href="https://cdn.jsdelivr.net/npm/vazirmatn@33.0.3/Vazirmatn-font-face.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --win-bg: #C0C0C0;
+            --win-dark-blue: #000080;
+            --win-light-blue: #1084D0;
+            --win-lcd-bg: #0A120A;
+            --win-lcd-green: #39FF14;
+            --win-shadow-dark: #404040;
+            --win-shadow-light: #FFFFFF;
+            --win-card-bg: #D4D0C8;
+            --accent-green: #00E676;
+            --accent-yellow: #FFFF00;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Vazirmatn', Tahoma, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        html, body {
+            height: 100%;
+            height: 100dvh;
+            width: 100%;
+            background-color: #008080; /* Windows 95 Teal */
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Responsive Mobile Shell */
+        .app-window-frame {
+            width: 100%;
+            max-width: 480px;
+            height: 100%;
+            height: 100dvh;
+            background-color: var(--win-bg);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 35px rgba(0,0,0,0.6);
+            border-left: 2px solid var(--win-shadow-light);
+            border-right: 2px solid #000;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 1. TOP HEADER (Fixed Height) */
+        .header-win-bar {
+            height: 38px;
+            background: linear-gradient(90deg, var(--win-dark-blue), var(--win-light-blue));
+            color: #FFFFFF;
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 800;
+            flex-shrink: 0;
+            border-bottom: 2px solid #000;
+            z-index: 10;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 3px;
+        }
+
+        .header-btn {
+            width: 16px;
+            height: 14px;
+            background: var(--win-bg);
+            border-top: 1px solid #FFF;
+            border-left: 1px solid #FFF;
+            border-right: 1px solid #000;
+            border-bottom: 1px solid #000;
+            color: #000;
+            font-size: 9px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 2. MIDDLE SCROLLABLE CONTENT */
+        .middle-scroll-area {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 10px 10px 14px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* TOP HERO CARD: Album Cover + Live Metadata + Spectrum */
+        .hero-now-playing-box {
+            background: #101620;
+            border: 2px inset var(--win-shadow-dark);
+            border-radius: 4px;
+            padding: 10px 12px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-shrink: 0;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+        }
+
+        .hero-cover-wrapper {
+            width: 84px;
+            height: 84px;
+            background: #000;
+            border: 2px solid #FFF;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-cover-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .hero-cover-img.spinning {
+            animation: spinCover 18s linear infinite;
+        }
+
+        @keyframes spinCover {
+            100% { transform: rotate(360deg); }
+        }
+
+        .hero-meta-column {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .hero-live-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 10px;
+            font-weight: bold;
+            font-family: monospace;
+        }
+
+        .hero-live-pill {
+            background: #FF3333;
+            color: #FFF;
+            padding: 1px 6px;
+            border-radius: 2px;
+            font-size: 9px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .pulse-light {
+            width: 5px;
+            height: 5px;
+            background: #FFF;
+            border-radius: 50%;
+            animation: pulseAnim 1s infinite alternate;
+        }
+
+        @keyframes pulseAnim {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        .hero-channel-title {
+            color: #FFFFFF;
+            font-size: 13.5px;
+            font-weight: 800;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .hero-song-text {
+            color: var(--win-lcd-green);
+            font-size: 12px;
+            font-family: monospace;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-shadow: 0 0 5px rgba(57, 255, 20, 0.5);
+        }
+
+        .hero-artist-text {
+            color: #A0AEC0;
+            font-size: 10.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .hero-spectrum-strip {
+            display: flex;
+            align-items: flex-end;
+            height: 16px;
+            gap: 2px;
+            margin-top: 3px;
+        }
+
+        .hero-bar-single {
+            flex: 1;
+            background: linear-gradient(to top, var(--win-lcd-green) 50%, #FF0 85%, #F00 100%);
+            height: 15%;
+            border-radius: 1px 1px 0 0;
+            transition: height 0.1s ease;
+        }
+
+        /* Horizontal Genre Filter Bar (Spotify Style) */
+        .genre-chips-row {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            flex-shrink: 0;
+            padding-bottom: 2px;
+        }
+        .genre-chips-row::-webkit-scrollbar { display: none; }
+
+        .genre-pill-btn {
+            background: var(--win-bg);
+            border-top: 1.5px solid #FFF;
+            border-left: 1.5px solid #FFF;
+            border-right: 1.5px solid var(--win-shadow-dark);
+            border-bottom: 1.5px solid var(--win-shadow-dark);
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: bold;
+            color: #000;
+            white-space: nowrap;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+
+        .genre-pill-btn.active {
+            background: var(--win-dark-blue);
+            color: #FFF;
+            border-top: 1.5px solid #000;
+            border-left: 1.5px solid #000;
+            border-right: 1.5px solid #FFF;
+            border-bottom: 1.5px solid #FFF;
+        }
+
+        .channels-label-header {
+            font-size: 12px;
+            font-weight: 800;
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2px 0;
+        }
+
+        /* Channels List */
+        .channel-feed-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .channel-item-card {
+            background: var(--win-card-bg);
+            border-top: 1.5px solid #FFF;
+            border-left: 1.5px solid #FFF;
+            border-right: 1.5px solid var(--win-shadow-dark);
+            border-bottom: 1.5px solid var(--win-shadow-dark);
+            border-radius: 3px;
+            padding: 8px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+
+        .channel-item-card:active {
+            background: #B8B4AC;
+        }
+
+        .channel-item-card.active {
+            background: var(--win-dark-blue) !important;
+            border-top: 1.5px solid #000 !important;
+            border-left: 1.5px solid #000 !important;
+            border-right: 1.5px solid #FFF !important;
+            border-bottom: 1.5px solid #FFF !important;
+        }
+
+        .card-left-part {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-icon-square {
+            width: 38px;
+            height: 38px;
+            background: #000;
+            border: 1px inset #808080;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--win-lcd-green);
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .channel-item-card.active .card-icon-square {
+            color: var(--accent-yellow);
+            border-color: #FFF;
+        }
+
+        .card-text-col {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-title-fa {
+            font-size: 12.5px;
+            font-weight: 800;
+            color: #000;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .channel-item-card.active .card-title-fa {
+            color: #FFF;
+        }
+
+        .card-subtext {
+            font-size: 10px;
+            color: #555;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 2px;
+        }
+
+        .channel-item-card.active .card-subtext {
+            color: #D4D0C8;
+        }
+
+        .card-bitrate-chip {
+            font-size: 9px;
+            font-weight: bold;
+            font-family: monospace;
+            padding: 2px 6px;
+            background: var(--win-shadow-dark);
+            color: #FFF;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .channel-item-card.active .card-bitrate-chip {
+            background: var(--accent-yellow);
+            color: #000;
+        }
+
+        /* 3. PROMINENT BOTTOM PLAYER BAR (Fixed Flex Item, 100% ALWAYS VISIBLE) */
+        .bottom-playback-dock {
+            height: 62px;
+            background: #141A22;
+            border-top: 2px solid var(--win-light-blue);
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-shrink: 0;
+            z-index: 20;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.5);
+        }
+
+        .dock-meta-click {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 0;
+            cursor: pointer;
+        }
+
+        .dock-cover-thumb {
+            width: 42px;
+            height: 42px;
+            background: var(--win-dark-blue);
+            border: 1.5px solid #FFF;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFF;
+            font-size: 16px;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .dock-text-group {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .dock-channel-name {
+            color: #FFFFFF;
+            font-size: 12.5px;
+            font-weight: 800;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dock-status-line {
+            color: var(--win-lcd-green);
+            font-size: 10px;
+            font-family: monospace;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dock-controls-cluster {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .dock-ctrl-btn {
+            background: var(--win-bg);
+            border-top: 2px solid #FFF;
+            border-left: 2px solid #FFF;
+            border-right: 2px solid #000;
+            border-bottom: 2px solid #000;
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #000;
+            cursor: pointer;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dock-ctrl-btn.play-btn-large {
+            background: var(--accent-green);
+            color: #000;
+            padding: 8px 16px;
+            font-size: 15px;
+        }
+
+        .dock-ctrl-btn:active {
+            border-top: 2px solid #000;
+            border-left: 2px solid #000;
+            border-right: 2px solid #FFF;
+            border-bottom: 2px solid #FFF;
+        }
+
+        /* 4. FOOTER TASKBAR (Fixed Height) */
+        .footer-taskbar {
+            height: 26px;
+            background: var(--win-bg);
+            border-top: 1.5px solid #FFF;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 8px;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        .start-btn-pill {
+            background: var(--win-bg);
+            border-top: 1.5px solid #FFF;
+            border-left: 1.5px solid #FFF;
+            border-right: 1.5px solid #404040;
+            border-bottom: 1.5px solid #404040;
+            padding: 1px 6px;
+            font-size: 10px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #000;
+            cursor: pointer;
+        }
+
+        .coder-signature-box {
+            border: 1px inset #808080;
+            padding: 1px 6px;
+            font-family: monospace;
+            font-size: 9.5px;
+            font-weight: bold;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-window-frame">
+        <!-- 1. Top Windows 95 Header -->
+        <header class="header-win-bar">
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-radio"></i>
+                <span>Ultradio 95 — استریم زنده رادیو نوستالژیک</span>
+            </div>
+            <div class="header-controls">
+                <div class="header-btn">_</div>
+                <div class="header-btn">□</div>
+                <div class="header-btn">✕</div>
+            </div>
+        </header>
+
+        <!-- 2. Scrollable Middle Area -->
+        <main class="middle-scroll-area">
+            <!-- Featured Dynamic Album Cover & Live Metadata -->
+            <section class="hero-now-playing-box">
+                <div class="hero-cover-wrapper">
+                    <img id="hero-cover-image" class="hero-cover-img" src="icon.svg" alt="Album Cover">
+                </div>
+                <div class="hero-meta-column">
+                    <div class="hero-live-row">
+                        <span class="hero-live-pill"><span class="pulse-light"></span> LIVE</span>
+                        <span style="color: var(--win-lcd-green);" id="hero-bitrate-tag">320 KBPS</span>
+                    </div>
+                    <div class="hero-channel-title" id="hero-station-name">پاپ خارجی (Pop Hits)</div>
+                    <div class="hero-song-text" id="hero-track-title">♫ در حال لود اطلاعات آهنگ...</div>
+                    <div class="hero-artist-text" id="hero-artist-title">Ultradio Streaming Network</div>
+                    <!-- 16-Band Micro Spectrum -->
+                    <div class="hero-spectrum-strip" id="spectrum-bars"></div>
+                </div>
+            </section>
+
+            <!-- Genre Filter Chips (Horizontal Scroll) -->
+            <nav class="genre-chips-row">
+                <button class="genre-pill-btn active" onclick="filterGenre('all', this)">همه (۱۲)</button>
+                <button class="genre-pill-btn" onclick="filterGenre('persian', this)">🇮🇷 فارسی سنتی</button>
+                <button class="genre-pill-btn" onclick="filterGenre('rap', this)">🎤 رپ فارسی</button>
+                <button class="genre-pill-btn" onclick="filterGenre('pop', this)">🎵 پاپ جهانی</button>
+                <button class="genre-pill-btn" onclick="filterGenre('phonk', this)">⚡ دریفت فانک</button>
+                <button class="genre-pill-btn" onclick="filterGenre('lofi', this)">☕ لوفای و تمرکز</button>
+                <button class="genre-pill-btn" onclick="filterGenre('rock', this)">🎸 راک و متال</button>
+            </nav>
+
+            <div class="channels-label-header">
+                <span>📻 ایستگاه‌های رادیویی:</span>
+                <span style="font-size: 10px; color: #555;" id="channel-count-tag">۱۲ کانال</span>
+            </div>
+
+            <!-- Channels Feed Container -->
+            <div class="channel-feed-list" id="channels-container"></div>
+        </main>
+
+        <!-- 3. ALWAYS-VISIBLE BOTTOM PLAYBACK DOCK -->
+        <section class="bottom-playback-dock">
+            <div class="dock-meta-click" onclick="togglePlayback()">
+                <div class="dock-cover-thumb">
+                    <img id="dock-cover-img" src="icon.svg" style="width:100%;height:100%;object-fit:cover;">
+                </div>
+                <div class="dock-text-group">
+                    <div class="dock-channel-name" id="dock-st-name">پاپ خارجی (Pop Hits)</div>
+                    <div class="dock-status-line" id="dock-live-st">آماده پخش • 320 kbps</div>
+                </div>
+            </div>
+            <div class="dock-controls-cluster">
+                <button class="dock-ctrl-btn" onclick="prevStation()"><i class="fa-solid fa-backward-step"></i></button>
+                <button class="dock-ctrl-btn play-btn-large" id="dock-play-btn" onclick="togglePlayback()"><i class="fa-solid fa-play"></i></button>
+                <button class="dock-ctrl-btn" onclick="nextStation()"><i class="fa-solid fa-forward-step"></i></button>
+            </div>
+        </section>
+
+        <!-- 4. Windows 95 Bottom Taskbar -->
+        <footer class="footer-taskbar">
+            <div class="start-btn-pill" onclick="togglePlayback()">
+                <i class="fa-brands fa-windows" style="color: var(--win-dark-blue);"></i>
+                <span>Start</span>
+            </div>
+            <div class="coder-signature-box">
+                Crafted with passion by Hellboy Coder ⚡
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const STATIONS = [
+            { id: "pop", cat: "pop", icon: "fa-music", nameFa: "پاپ خارجی", nameEn: "Pop Hits", url: "https://radio.9craft.ir:7443/pop", bitrate: "320 kbps", desc: "بهترین آهنگ‌های پاپ بین‌المللی و تاپ چارت", defaultCover: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&auto=format&fit=crop&q=60" },
+            { id: "pop2", cat: "pop", icon: "fa-compact-disc", nameFa: "پاپ کلاب و دنس", nameEn: "Pop Club & Dance", url: "https://radio.9craft.ir:7443/pop2", bitrate: "320 kbps", desc: "میکس‌های پرانرژی و دنس روز", defaultCover: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&auto=format&fit=crop&q=60" },
+            { id: "lofi", cat: "lofi", icon: "fa-mug-hot", nameFa: "لوفای (Lo-Fi)", nameEn: "Lo-Fi Beats", url: "https://radio.9craft.ir:7443/lofi", bitrate: "192 kbps", desc: "بیت‌های آرامش‌بخش برای مطالعه و تمرکز", defaultCover: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=300&auto=format&fit=crop&q=60" },
+            { id: "persian", cat: "persian", icon: "fa-record-vinyl", nameFa: "فارسی قدیمی", nameEn: "Classic Persian", url: "https://radio.9craft.ir:7443/persian", bitrate: "256 kbps", desc: "نوستالژی طلایی و ترانه‌های ماندگار ایرانی", defaultCover: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=300&auto=format&fit=crop&q=60" },
+            { id: "prap", cat: "rap", icon: "fa-microphone-lines", nameFa: "رپ فارسی", nameEn: "Persian Rap", url: "https://radio.9craft.ir:7443/prap", bitrate: "320 kbps", desc: "برترین آثار هیپ‌هاپ و رپ زیرزمینی", defaultCover: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=300&auto=format&fit=crop&q=60" },
+            { id: "hiphop", cat: "rap", icon: "fa-headphones", nameFa: "هیپ هاپ جهانی", nameEn: "Global Hip-Hop", url: "https://radio.9craft.ir:7443/hiphop", bitrate: "320 kbps", desc: "ترک‌های بیس‌دار هیپ‌هاپ اولداسکول تا ترپ", defaultCover: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&auto=format&fit=crop&q=60" },
+            { id: "phonk", cat: "phonk", icon: "fa-fire", nameFa: "دریفت فانک", nameEn: "Drift Phonk", url: "https://radio.9craft.ir:7443/phonk", bitrate: "320 kbps", desc: "بیت‌های پرشتاب دریفت و آگورفوبیا", defaultCover: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=300&auto=format&fit=crop&q=60" },
+            { id: "phonk2", cat: "phonk", icon: "fa-bolt", nameFa: "فانک هایپر", nameEn: "Phonk Hyper", url: "https://radio.9craft.ir:7443/phonk2", bitrate: "320 kbps", desc: "فانک متال، ممفیس و موج تاریک", defaultCover: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=300&auto=format&fit=crop&q=60" },
+            { id: "rock", cat: "rock", icon: "fa-guitar", nameFa: "راک و متال", nameEn: "Classic & Hard Rock", url: "https://radio.9craft.ir:7443/rock", bitrate: "320 kbps", desc: "سولوهای افسانه‌ای گیتار و هارد راک", defaultCover: "https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?w=300&auto=format&fit=crop&q=60" },
+            { id: "relax", cat: "lofi", icon: "fa-moon", nameFa: "آرامش بخش", nameEn: "Relax & Ambient", url: "https://radio.9craft.ir:7443/relax", bitrate: "256 kbps", desc: "موسیقی امبینت، مدیتیشن و امواج التیام‌بخش", defaultCover: "https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?w=300&auto=format&fit=crop&q=60" },
+            { id: "soul", cat: "persian", icon: "fa-heart", nameFa: "سول و بلوز", nameEn: "Soul & Neo-Soul", url: "https://radio.9craft.ir:7443/soul", bitrate: "256 kbps", desc: "نوای احساسی سول و آر اند بی ریشه‌دار", defaultCover: "https://images.unsplash.com/photo-1520523839898-507128003666?w=300&auto=format&fit=crop&q=60" },
+            { id: "ost", cat: "pop", icon: "fa-film", nameFa: "موسیقی متن (OST)", nameEn: "Soundtracks & OST", url: "https://radio.9craft.ir:7443/ost", bitrate: "320 kbps", desc: "ماندگارترین موسیقی متن فیلم و انیمه", defaultCover: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300&auto=format&fit=crop&q=60" }
+        ];
+
+        let currentIndex = 0;
+        let isPlaying = false;
+        let audioPlayer = new Audio();
+        let spectrumInterval = null;
+        let currentFilter = 'all';
+
+        // Render 16 Spectrum Bars
+        const spectrumContainer = document.getElementById('spectrum-bars');
+        for(let i=0; i<16; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'hero-bar-single';
+            spectrumContainer.appendChild(bar);
+        }
+
+        function renderChannelList() {
+            const container = document.getElementById('channels-container');
+            container.innerHTML = '';
+
+            let count = 0;
+            STATIONS.forEach((station, index) => {
+                if (currentFilter !== 'all' && station.cat !== currentFilter) return;
+                count++;
+
+                const isCurrent = (index === currentIndex);
+                const card = document.createElement('div');
+                card.className = `channel-item-card ${isCurrent ? 'active' : ''}`;
+                card.id = `channel-card-${index}`;
+                card.onclick = () => selectStation(index);
+
+                card.innerHTML = `
+                    <div class="card-left-part">
+                        <div class="card-icon-square">
+                            <i class="fa-solid ${station.icon}"></i>
+                        </div>
+                        <div class="card-text-col">
+                            <div class="card-title-fa">
+                                <span>${station.nameFa}</span>
+                                <span style="font-size: 10px; opacity: 0.8;">(${station.nameEn})</span>
+                            </div>
+                            <div class="card-subtext">${station.desc}</div>
+                        </div>
+                    </div>
+                    <span class="card-bitrate-chip">${station.bitrate}</span>
+                `;
+                container.appendChild(card);
+            });
+
+            document.getElementById('channel-count-tag').textContent = `${count} کانال`;
+        }
+
+        function filterGenre(cat, btn) {
+            currentFilter = cat;
+            document.querySelectorAll('.genre-pill-btn').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            renderChannelList();
+        }
+
+        function animateBars() {
+            const bars = document.querySelectorAll('.hero-bar-single');
+            bars.forEach(b => {
+                b.style.height = isPlaying ? (Math.floor(Math.random() * 85) + 15) + '%' : '15%';
+            });
+        }
+
+        async function fetchSongMetadata() {
+            try {
+                const res = await fetch('https://radio.9craft.ir/v1/api/genre/all');
+                if (res.ok) {
+                    const json = await res.json();
+                    if (json && Array.isArray(json.data)) {
+                        const currentStation = STATIONS[currentIndex];
+                        const meta = json.data.find(d => d.genre && d.genre.toLowerCase() === currentStation.id.toLowerCase());
+                        if (meta) {
+                            if (meta.title) document.getElementById('hero-track-title').textContent = `♫ ${meta.title}`;
+                            if (meta.artist) document.getElementById('hero-artist-title').textContent = meta.artist;
+                            if (meta.cover_url) {
+                                document.getElementById('hero-cover-image').src = meta.cover_url;
+                                document.getElementById('dock-cover-img').src = meta.cover_url;
+                            }
+                        }
+                    }
+                }
+            } catch(e) {}
+        }
+
+        function selectStation(index) {
+            currentIndex = index;
+            const station = STATIONS[index];
+
+            document.getElementById('hero-station-name').textContent = `${station.nameFa} (${station.nameEn})`;
+            document.getElementById('hero-bitrate-tag').textContent = station.bitrate;
+            document.getElementById('hero-cover-image').src = station.defaultCover;
+            document.getElementById('dock-cover-img').src = station.defaultCover;
+            document.getElementById('hero-track-title').textContent = `♫ ${station.nameFa}`;
+            document.getElementById('hero-artist-title').textContent = station.desc;
+
+            document.getElementById('dock-st-name').textContent = `${station.nameFa} (${station.nameEn})`;
+            document.getElementById('dock-live-st').textContent = `در حال اتصال • ${station.bitrate}`;
+
+            renderChannelList();
+            startPlayback();
+            fetchSongMetadata();
+        }
+
+        function startPlayback() {
+            const station = STATIONS[currentIndex];
+            audioPlayer.src = station.url;
+            const coverImg = document.getElementById('hero-cover-image');
+
+            audioPlayer.play().then(() => {
+                isPlaying = true;
+                coverImg.classList.add('spinning');
+                document.getElementById('dock-play-btn').innerHTML = '<i class="fa-solid fa-pause"></i>';
+                document.getElementById('dock-live-st').textContent = `● پخش زنده • ${station.bitrate}`;
+
+                if (!spectrumInterval) spectrumInterval = setInterval(animateBars, 100);
+
+                if ('mediaSession' in navigator) {
+                    navigator.mediaSession.metadata = new MediaMetadata({
+                        title: station.nameFa,
+                        artist: `الترادیو — ${station.nameEn}`,
+                        album: "Ultradio Windows 95 Live",
+                        artwork: [{ src: station.defaultCover, sizes: "300x300", type: "image/jpeg" }]
+                    });
+
+                    navigator.mediaSession.setActionHandler('play', startPlayback);
+                    navigator.mediaSession.setActionHandler('pause', togglePlayback);
+                    navigator.mediaSession.setActionHandler('previoustrack', prevStation);
+                    navigator.mediaSession.setActionHandler('nexttrack', nextStation);
+                }
+            }).catch(err => {
+                console.warn('Playback error:', err);
+                document.getElementById('dock-live-st').textContent = '✕ در حال اتصال...';
+            });
+        }
+
+        function togglePlayback() {
+            const coverImg = document.getElementById('hero-cover-image');
+            if (isPlaying) {
+                audioPlayer.pause();
+                isPlaying = false;
+                coverImg.classList.remove('spinning');
+                document.getElementById('dock-play-btn').innerHTML = '<i class="fa-solid fa-play"></i>';
+                document.getElementById('dock-live-st').textContent = 'متوقف شده';
+                clearInterval(spectrumInterval);
+                spectrumInterval = null;
+                animateBars();
+            } else {
+                startPlayback();
+            }
+        }
+
+        function nextStation() {
+            selectStation((currentIndex + 1) % STATIONS.length);
+        }
+
+        function prevStation() {
+            selectStation((currentIndex - 1 + STATIONS.length) % STATIONS.length);
+        }
+
+        renderChannelList();
+        selectStation(0);
+        setInterval(fetchSongMetadata, 15000);
+    </script>
+</body>
+</html>
