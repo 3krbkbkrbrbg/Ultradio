@@ -1,26 +1,393 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>الترادیو | رادیو آنلاین رایگان نوستالژیک</title>
-    <meta name="description" content="رادیو رایگان الترادیو طراحی شده توسط سلمان حسین پور - ۱۳ کانال استریم زنده موسیقی به سبک ویندوز ۹۵" />
-    <link rel="icon" type="image/svg+xml" href="icon.svg" />
-    <link rel="apple-touch-icon" href="icon.svg" />
-    <link rel="manifest" href="manifest.json" />
-    <meta name="theme-color" content="#000080" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="الترادیو" />
-    <meta property="og:title" content="الترادیو | رادیو آنلاین رایگان" />
-    <meta property="og:description" content="رادیو رایگان الترادیو طراحی شده توسط سلمان حسین پور" />
-    <meta property="og:image" content="/icon.svg" />
-    <meta property="og:type" content="website" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+    <meta name="theme-color" content="#000080">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="manifest" href="manifest.json">
+    <link href="https://cdn.jsdelivr.net/npm/vazirmatn@33.0.3/Vazirmatn-font-face.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --win-bg: #C0C0C0;
+            --win-dark: #000080;
+            --win-light: #1084D0;
+            --win-shadow-light: #FFFFFF;
+            --win-shadow-dark: #404040;
+            --lcd-bg: #0A120A;
+            --lcd-green: #39FF14;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Vazirmatn', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #008080;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .win-frame {
+            width: 100%;
+            max-width: 440px;
+            background: var(--win-bg);
+            border-top: 3px solid #FFF;
+            border-left: 3px solid #FFF;
+            border-right: 3px solid #000;
+            border-bottom: 3px solid #000;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .win-titlebar {
+            background: linear-gradient(90deg, #000080, #1084D0);
+            color: #fff;
+            padding: 6px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .main-content {
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .winamp-lcd {
+            background: var(--lcd-bg);
+            border: 2px inset #808080;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .lcd-status {
+            display: flex;
+            justify-content: space-between;
+            font-family: monospace;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .lcd-song {
+            color: var(--lcd-green);
+            font-family: monospace;
+            font-size: 14px;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-shadow: 0 0 6px rgba(57, 255, 20, 0.6);
+        }
+
+        .spectrum-container {
+            display: flex;
+            align-items: flex-end;
+            height: 36px;
+            gap: 2px;
+            padding-top: 4px;
+        }
+
+        .spectrum-bar {
+            flex: 1;
+            background: linear-gradient(to top, #39FF14 60%, #FFFF00 85%, #FF0000 100%);
+            height: 15%;
+            transition: height 0.15s ease;
+        }
+
+        .winamp-panel {
+            background: #D4D0C8;
+            border: 1px solid #404040;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .retro-btn {
+            background: #C0C0C0;
+            border-top: 2px solid #FFF;
+            border-left: 2px solid #FFF;
+            border-right: 2px solid #404040;
+            border-bottom: 2px solid #404040;
+            padding: 6px 14px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #000;
+        }
+
+        .retro-btn:active {
+            border-top: 2px solid #404040;
+            border-left: 2px solid #404040;
+            border-right: 2px solid #FFF;
+            border-bottom: 2px solid #FFF;
+        }
+
+        .station-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            max-height: 380px;
+            overflow-y: auto;
+        }
+
+        .station-card {
+            background: #D4D0C8;
+            border-top: 2px solid #FFF;
+            border-left: 2px solid #FFF;
+            border-right: 2px solid #404040;
+            border-bottom: 2px solid #404040;
+            padding: 8px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .station-card.active {
+            background: #000080;
+            color: #FFF;
+            border-top: 2px solid #000;
+            border-left: 2px solid #000;
+            border-right: 2px solid #FFF;
+            border-bottom: 2px solid #FFF;
+        }
+
+        .st-title {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .st-desc {
+            font-size: 10px;
+            opacity: 0.8;
+            line-height: 1.3;
+        }
+
+        .st-badge {
+            align-self: flex-start;
+            font-size: 9px;
+            font-weight: bold;
+            padding: 1px 5px;
+            background: #333;
+            color: #FFF;
+            border-radius: 2px;
+        }
+
+        .station-card.active .st-badge {
+            background: #FF0;
+            color: #000;
+        }
+
+        .win-taskbar {
+            background: #C0C0C0;
+            border-top: 2px solid #FFF;
+            padding: 4px 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="win-frame">
+        <!-- Titlebar -->
+        <div class="win-titlebar">
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-radio"></i>
+                <span>الترادیو — استریم زنده ویندوز ۹۵</span>
+            </div>
+            <span style="font-family: monospace;">_ □ ✕</span>
+        </div>
+
+        <div class="main-content">
+            <!-- Winamp LCD -->
+            <div class="winamp-lcd">
+                <div class="lcd-status">
+                    <span id="bitrate-tag" style="color: var(--lcd-green);">320 KBPS • STEREO</span>
+                    <span id="play-status" style="color: #FF3333;">■ STOPPED</span>
+                </div>
+                <div class="lcd-song" id="station-title">
+                    ♫ رادیو پاپ خارجی (Pop Hits)
+                </div>
+                <div class="spectrum-container" id="spectrum">
+                    <!-- 16 Bars -->
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="winamp-panel">
+                <div style="display: flex; gap: 6px;">
+                    <button class="retro-btn" onclick="prevStation()"><i class="fa-solid fa-backward-step"></i></button>
+                    <button class="retro-btn" id="play-btn" onclick="togglePlay()" style="color: #008000;"><i class="fa-solid fa-play"></i></button>
+                    <button class="retro-btn" onclick="stopRadio()"><i class="fa-solid fa-stop"></i></button>
+                    <button class="retro-btn" onclick="nextStation()"><i class="fa-solid fa-forward-step"></i></button>
+                </div>
+                <div style="font-size: 11px; font-weight: bold; color: #000; font-family: monospace;">
+                    VOL: 100%
+                </div>
+            </div>
+
+            <div style="font-size: 12px; font-weight: bold; color: #000;">
+                ایستگاه‌های رادیویی:
+            </div>
+
+            <!-- Stations List -->
+            <div class="station-grid" id="station-list">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+
+        <div class="win-taskbar">
+            <div style="background: #C0C0C0; border-top: 1px solid #FFF; border-left: 1px solid #FFF; border-right: 1px solid #404040; border-bottom: 1px solid #404040; padding: 2px 6px;">
+                Start
+            </div>
+            <div style="font-family: monospace;">Crafted by Hellboy Coder ⚡</div>
+        </div>
+    </div>
+
+    <script>
+        const STATIONS = [
+            { id: "pop", nameFa: "پاپ خارجی", nameEn: "Pop Hits", url: "https://radio.9craft.ir:7443/pop", bitrate: "320 kbps", desc: "بهترین آهنگ‌های پاپ بین‌المللی" },
+            { id: "pop2", nameFa: "پاپ کلاب و دنس", nameEn: "Pop Club & Dance", url: "https://radio.9craft.ir:7443/pop2", bitrate: "320 kbps", desc: "میکس‌های پرانرژی و دنس روز" },
+            { id: "lofi", nameFa: "لوفای (Lo-Fi)", nameEn: "Lo-Fi Beats", url: "https://radio.9craft.ir:7443/lofi", bitrate: "192 kbps", desc: "بیت‌های آرامش‌بخش مطالعه و تمرکز" },
+            { id: "persian", nameFa: "فارسی قدیمی", nameEn: "Classic Persian", url: "https://radio.9craft.ir:7443/persian", bitrate: "256 kbps", desc: "ترانه‌های ماندگار و اصیل ایرانی" },
+            { id: "prap", nameFa: "رپ فارسی", nameEn: "Persian Rap", url: "https://radio.9craft.ir:7443/prap", bitrate: "320 kbps", desc: "برترین آثار هیپ‌هاپ و رپ زیرزمینی" },
+            { id: "hiphop", nameFa: "هیپ هاپ جهانی", nameEn: "Global Hip-Hop", url: "https://radio.9craft.ir:7443/hiphop", bitrate: "320 kbps", desc: "ترک‌های بیس‌دار هیپ‌هاپ اولداسکول" },
+            { id: "phonk", nameFa: "دریفت فانک", nameEn: "Drift Phonk", url: "https://radio.9craft.ir:7443/phonk", bitrate: "320 kbps", desc: "بیت‌های پرشتاب دریفت و هایپرفانک" },
+            { id: "phonk2", nameFa: "فانک هایپر", nameEn: "Phonk Hyper", url: "https://radio.9craft.ir:7443/phonk2", bitrate: "320 kbps", desc: "فانک متال و موج تاریک" },
+            { id: "rock", nameFa: "راک و متال", nameEn: "Hard Rock", url: "https://radio.9craft.ir:7443/rock", bitrate: "320 kbps", desc: "سولوهای افسانه‌ای گیتار و هارد راک" },
+            { id: "relax", nameFa: "آرامش بخش", nameEn: "Relax & Ambient", url: "https://radio.9craft.ir:7443/relax", bitrate: "256 kbps", desc: "موسیقی امبینت و مدیتیشن" },
+            { id: "soul", nameFa: "سول و بلوز", nameEn: "Soul & Neo-Soul", url: "https://radio.9craft.ir:7443/soul", bitrate: "256 kbps", desc: "نوای احساسی سول و آر اند بی" },
+            { id: "ost", nameFa: "موسیقی متن (OST)", nameEn: "Soundtracks", url: "https://radio.9craft.ir:7443/ost", bitrate: "320 kbps", desc: "ماندگارترین موسیقی متن فیلم و انیمه" }
+        ];
+
+        let currentIndex = 0;
+        let isPlaying = false;
+        let audio = new Audio();
+        let spectrumInterval = null;
+
+        // Render spectrum bars
+        const spectrum = document.getElementById('spectrum');
+        for(let i=0; i<16; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'spectrum-bar';
+            spectrum.appendChild(bar);
+        }
+
+        // Render station cards
+        const list = document.getElementById('station-list');
+        STATIONS.forEach((st, idx) => {
+            const card = document.createElement('div');
+            card.className = `station-card ${idx === 0 ? 'active' : ''}`;
+            card.id = `station-${idx}`;
+            card.onclick = () => selectStation(idx);
+            card.innerHTML = `
+                <div class="st-title">${st.nameFa}</div>
+                <div class="st-desc">${st.desc}</div>
+                <span class="st-badge">${st.bitrate}</span>
+            `;
+            list.appendChild(card);
+        });
+
+        function updateSpectrum() {
+            const bars = document.querySelectorAll('.spectrum-bar');
+            bars.forEach(b => {
+                b.style.height = isPlaying ? (Math.random() * 80 + 15) + '%' : '15%';
+            });
+        }
+
+        function selectStation(idx) {
+            document.querySelectorAll('.station-card').forEach(c => c.classList.remove('active'));
+            document.getElementById(`station-${idx}`).classList.add('active');
+            currentIndex = idx;
+            const st = STATIONS[idx];
+            document.getElementById('station-title').textContent = `♫ ${st.nameFa} (${st.nameEn})`;
+            document.getElementById('bitrate-tag').textContent = `${st.bitrate} • STEREO`;
+            playRadio();
+        }
+
+        function playRadio() {
+            const st = STATIONS[currentIndex];
+            audio.src = st.url;
+            document.getElementById('play-status').textContent = '● BUFFERING...';
+            document.getElementById('play-status').style.color = '#FFA500';
+
+            audio.play().then(() => {
+                isPlaying = true;
+                document.getElementById('play-status').textContent = '● LIVE ON AIR';
+                document.getElementById('play-status').style.color = '#FF3333';
+                document.getElementById('play-btn').innerHTML = '<i class="fa-solid fa-pause"></i>';
+                if (!spectrumInterval) spectrumInterval = setInterval(updateSpectrum, 120);
+
+                if ('mediaSession' in navigator) {
+                    navigator.mediaSession.metadata = new MediaMetadata({
+                        title: st.nameFa,
+                        artist: `الترادیو — ${st.nameEn}`,
+                        album: "Ultradio Windows 95 Live"
+                    });
+                }
+            }).catch(e => {
+                console.warn(e);
+                document.getElementById('play-status').textContent = '✕ ERROR';
+            });
+        }
+
+        function togglePlay() {
+            if (isPlaying) {
+                audio.pause();
+                isPlaying = false;
+                document.getElementById('play-status').textContent = '■ PAUSED';
+                document.getElementById('play-btn').innerHTML = '<i class="fa-solid fa-play"></i>';
+                clearInterval(spectrumInterval);
+                spectrumInterval = null;
+                updateSpectrum();
+            } else {
+                playRadio();
+            }
+        }
+
+        function stopRadio() {
+            audio.pause();
+            audio.src = '';
+            isPlaying = false;
+            document.getElementById('play-status').textContent = '■ STOPPED';
+            document.getElementById('play-status').style.color = '#888';
+            document.getElementById('play-btn').innerHTML = '<i class="fa-solid fa-play"></i>';
+            clearInterval(spectrumInterval);
+            spectrumInterval = null;
+            updateSpectrum();
+        }
+
+        function nextStation() {
+            selectStation((currentIndex + 1) % STATIONS.length);
+        }
+
+        function prevStation() {
+            selectStation((currentIndex - 1 + STATIONS.length) % STATIONS.length);
+        }
+    </script>
+</body>
+</html>

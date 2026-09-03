@@ -19,20 +19,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build Web App & PWA
-        run: npm run build
-
-      - name: Deploy to GitHub Pages Branch (gh-pages)
+      - name: Deploy static root to GitHub Pages Branch (gh-pages)
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: dist
+          folder: .
           branch: gh-pages
+
 
