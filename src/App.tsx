@@ -111,10 +111,10 @@ export default function App() {
         isPlaying={status === "playing"}
       />
 
-      {/* 3. Main Workspace / Deck & Station Selector (Strictly fits remaining height, NO page scroll) */}
-      <main className="flex-1 min-h-0 p-1.5 sm:p-2 flex flex-col lg:flex-row gap-1.5 sm:gap-2 overflow-hidden">
-        {/* Left / Top Window: Stereo Visualizer Deck & FM Presets */}
-        <div className="w-full lg:w-5/12 flex flex-col shrink-0 lg:shrink min-h-0 overflow-y-auto lg:overflow-visible">
+      {/* 3. Main Workspace / Deck & Station Selector */}
+      <main className="flex-1 min-h-0 p-1.5 sm:p-2 flex flex-col lg:flex-row gap-1.5 sm:gap-2 overflow-y-auto lg:overflow-hidden pb-20 sm:pb-2">
+        {/* Top Window on Mobile: Large Cover Art Deck + Live Song Metadata */}
+        <div className="w-full lg:w-5/12 flex flex-col shrink-0 min-h-0">
           <VisualizerScreen
             currentStation={currentStation}
             currentSong={currentSong}
@@ -130,8 +130,8 @@ export default function App() {
           />
         </div>
 
-        {/* Right / Bottom Window: 13 Station Selector Grid & Live Songs DB */}
-        <div className="w-full lg:w-7/12 flex-1 min-h-0 flex flex-col overflow-hidden">
+        {/* Channels List & Genre Database */}
+        <div className="w-full lg:w-7/12 flex-1 min-h-[300px] flex flex-col">
           <StationGrid
             currentStation={currentStation}
             status={status}
