@@ -95,7 +95,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
               ★ ULTRA RADIO 1995-2026
             </div>
             <div className="win95-outset bg-red-800 text-yellow-300 p-1 text-center border border-black">
-              ❤ MADE WITH PASSION
+              Crafted by Hellboy Coder ⚡
             </div>
           </div>
 
