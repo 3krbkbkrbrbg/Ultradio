@@ -10,8 +10,8 @@
       "purpose": "any maskable"
     }
   ],
-  "start_url": "/Ultradio/",
-  "scope": "/Ultradio/",
+  "start_url": "./",
+  "scope": "./",
   "background_color": "#c0c0c0",
   "theme_color": "#000080",
   "display": "standalone",

@@ -58,7 +58,7 @@ export const BottomPlayerBar: React.FC<BottomPlayerBarProps> = ({
   return (
     <div
       id="bottom-player-bar"
-      className="w-full win95-outset bg-[#c0c0c0] p-1.5 shrink-0 z-30 select-none shadow-2xl"
+      className="w-full win95-outset bg-[#c0c0c0] p-1.5 shrink-0 z-40 select-none shadow-2xl border-t-2 border-white sticky bottom-0"
     >
       {/* Top micro bar with status LED */}
       <div className="flex items-center justify-between px-1 pb-1 border-b border-[#808080] text-[10px] font-mono">

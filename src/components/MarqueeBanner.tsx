@@ -28,7 +28,7 @@ export const MarqueeBanner: React.FC<MarqueeBannerProps> = ({
             ⚡ NOW PLAYING: <span className="text-[#00ff00] underline">{songTitle}</span> - <span className="text-[#ffffff]">{songArtist}</span>
           </span>
           <span className="text-[#00ffff] bg-red-950 px-2 py-0.5 border border-yellow-400">
-            📻 رادیو رایگان الترادیو — طراحی شده توسط سلمان حسین پور
+            📻 رادیو نوستالژیک الترادیو — ساخته دست Hellboy Coder ⚡
           </span>
           <span className="text-[#ff00ff]">
             ✦ STATION: <span className="text-[#00ffff]">{currentStation.nameFa} ({currentStation.nameEn})</span>
