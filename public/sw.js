@@ -1,9 +1,9 @@
-const CACHE_NAME = 'ultradio-pwa-v1';
+const CACHE_NAME = 'ultradio-pwa-v2';
 const ASSETS_TO_CACHE = [
-  './',
-  './index.html',
-  './icon.svg',
-  './manifest.json'
+  '/Ultradio/',
+  '/Ultradio/index.html',
+  '/Ultradio/icon.svg',
+  '/Ultradio/manifest.json'
 ];
 
 self.addEventListener('install', (event) => {
