@@ -121,6 +121,35 @@ export function useRadioPlayer() {
         setStatus("stopped");
       });
     }
+
+    // MediaSession API for Background audio & Lockscreen controls on Android & iOS
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: station.nameFa,
+        artist: `الترادیو — ${station.nameEn}`,
+        album: "Ultradio Windows 95 Live",
+        artwork: [
+          { src: "/icon.svg", sizes: "512x512", type: "image/svg+xml" }
+        ]
+      });
+
+      navigator.mediaSession.setActionHandler("play", () => {
+        audio.play();
+        setStatus("playing");
+      });
+      navigator.mediaSession.setActionHandler("pause", () => {
+        audio.pause();
+        setStatus("stopped");
+      });
+      navigator.mediaSession.setActionHandler("previoustrack", () => {
+        const prevIdx = (index - 1 + STATIONS.length) % STATIONS.length;
+        playStation(prevIdx);
+      });
+      navigator.mediaSession.setActionHandler("nexttrack", () => {
+        const nextIdx = (index + 1) % STATIONS.length;
+        playStation(nextIdx);
+      });
+    }
   }, []);
 
   // Toggle play/pause
