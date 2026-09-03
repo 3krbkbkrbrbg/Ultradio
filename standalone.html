@@ -759,10 +759,12 @@
                         artwork: [{ src: station.defaultCover, sizes: "300x300", type: "image/jpeg" }]
                     });
 
-                    navigator.mediaSession.setActionHandler('play', startPlayback);
-                    navigator.mediaSession.setActionHandler('pause', togglePlayback);
+                    navigator.mediaSession.setActionHandler('play', () => { if (!isPlaying) audioPlayer.play().catch(()=>{}); navigator.mediaSession.playbackState = 'playing'; });
+                    navigator.mediaSession.setActionHandler('pause', () => { if (isPlaying) { audioPlayer.pause(); navigator.mediaSession.playbackState = 'paused'; } });
                     navigator.mediaSession.setActionHandler('previoustrack', prevStation);
                     navigator.mediaSession.setActionHandler('nexttrack', nextStation);
+                    navigator.mediaSession.setActionHandler('stop', () => { audioPlayer.pause(); audioPlayer.src = ''; isPlaying = false; navigator.mediaSession.playbackState = 'paused'; });
+                    navigator.mediaSession.playbackState = 'playing';
                 }
             }).catch(err => {
                 console.warn('Playback error:', err);
@@ -797,6 +799,50 @@
         renderChannelList();
         selectStation(0);
         setInterval(fetchSongMetadata, 15000);
+
+        // === BACKGROUND PLAY PROTECTION ===
+        // Prevent browser from pausing audio when page goes to background
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && isPlaying) {
+                // Page hidden — force audio to keep playing
+                audioPlayer.play().catch(() => {});
+            }
+        });
+
+        // Re-request audio play on page focus/return
+        document.addEventListener('focus', () => {
+            if (isPlaying && audioPlayer.paused) {
+                audioPlayer.play().catch(() => {});
+            }
+        });
+
+        // Handle Android power-save / battery optimization killing audio
+        audioPlayer.addEventListener('pause', () => {
+            if (isPlaying && !audioPlayer.ended) {
+                // Audio was paused externally (not by user) — try to resume
+                setTimeout(() => {
+                    if (isPlaying && audioPlayer.paused) {
+                        audioPlayer.play().catch(() => {});
+                    }
+                }, 300);
+            }
+        });
+
+        // Handle audio errors — auto-reconnect stream
+        audioPlayer.addEventListener('error', () => {
+            if (isPlaying) {
+                const station = STATIONS[currentIndex];
+                audioPlayer.src = station.url;
+                setTimeout(() => {
+                    audioPlayer.play().catch(() => {});
+                }, 1000);
+            }
+        });
+
+        // Prevent page lifecycle from killing audio (Chrome on Android)
+        if ('wakeLock' in navigator) {
+            navigator.wakeLock.request('screen').catch(() => {});
+        }
     </script>
 </body>
 </html>
